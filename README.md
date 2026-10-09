@@ -16,17 +16,28 @@ hashes.
    time. Chance-corrected, Cohen's kappa is 0.649 — a good result, not a near-perfect one.
 3. **Against the maintainer, both finders fall to chance.** On the 118 findings rated by
    the model, the triage firm *and* the maintainer, kappa is 0.035 and 0.030; both 95%
-   intervals include zero. Paired, the difference between them is 0.004 [-0.069, +0.075]:
-   **not distinguishable**.
+   intervals include zero. Paired, the difference between them is 0.004, interval
+   [-0.092, +0.073]: **not distinguishable**.
 4. **So the inflation belongs to the finder's seat, not to the model.** The two finders
    agree with each other (kappa 0.578, same band 85.6% of the time) and both sit above the
-   maintainer — the model 0.64 bands hot, the human firm 0.54. The only difference that
-   survives the paired test is magnitude: the model runs 0.093 bands hotter [+0.025,
-   +0.161].
+   maintainer — the model +0.64 bands [+0.44, +0.97], the human firm +0.54 [+0.38, +0.73].
+   The only difference that survives is magnitude: the model runs 0.093 bands hotter,
+   interval [+0.016, +0.286].
+
+Every interval above resamples discovery dates rather than findings. These findings arrive
+in batches — 22 dates carry those 118 comparisons and the largest supplies 44 — so an
+interval over findings would be narrower than the evidence supports. The first version of
+this analysis made that mistake; see `src/stats.py:cluster_bootstrap`.
+
+On the largest available sample, every finding carrying both a Claude and a maintainer
+band, the gap is **+0.52 bands, 95% [+0.39, +0.64], n=163**. That is the figure to quote.
+A per-bug-class breakdown of it does not survive testing and has been withdrawn: the one
+bucket that carried a story was half two projects, and fell level with the rest once they
+were removed.
 
 A practical corollary for anyone enrolled in OSS Scanner: expect the band on an unreviewed
-report to read roughly half a band to two thirds of a band above what you would assign
-yourself. That is a calibration note, not a complaint.
+report to read roughly half a band above what you would assign yourself. That is a
+calibration note, not a complaint.
 
 ## A second finding: the threat-model template's severity floor
 
