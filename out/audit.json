@@ -1050,10 +1050,10 @@
     },
     "status_counts": {
       "null": 195,
-      "withdrawn": 246,
-      "fixed": 218,
       "disclosed": 5936,
-      "merged": 2
+      "merged": 2,
+      "withdrawn": 246,
+      "fixed": 218
     },
     "patch_acceptance": {
       "cited": 0,

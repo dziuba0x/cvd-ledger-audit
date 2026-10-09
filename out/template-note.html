@@ -91,26 +91,36 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--rule);font-si
 <header>
   <p class="eyebrow">Independent · public data · not a vulnerability report</p>
   <h1>Template Floor Check</h1>
-  <p class="standfirst">OSS Scanner's threat-model template gives one worked example of a severity
-  rubric. In Anthropic's own published ledger, most maintainers rate those bug classes below the
-  floor that example states.</p>
+  <p class="standfirst">OSS Scanner's README asks maintainers whether they cap memory-safety
+  findings. Its threat-model template tells them not to go below high. In Anthropic's own published
+  ledger, nearly three quarters of maintainers go below it.</p>
   <div class="disclaim">Not affiliated with Anthropic, not reviewed by them. Every figure is
   recomputed from the public ledger at <code>red.anthropic.com/2026/cvd</code>, snapshot r35. The
   ten figures Anthropic states in prose reproduce exactly from that file before anything below
   departs from them.</div>
 </header>
 
-<h2>The example</h2>
-<p class="prose"><code>templates/threat_model.md</code> in <code>anthropics/oss-scanner</code>
-offers one worked example under the heading <i>How you rate severity</i>:</p>
-<div class="quote">any buffer overflow, use-after-free, or double free is high+ at a minimum
-<span>templates/threat_model.md — the only severity guidance a maintainer sees before writing their own</span></div>
+<h2>Two worked examples, pointing different ways</h2>
+<p class="prose">A maintainer writing a threat model for OSS Scanner meets severity guidance
+twice. The README asks them questions, and they are good ones:</p>
+<div class="quote" style="border-left-color:var(--ok)">do you consider post-auth SQLi high or
+critical? are buffer overflows without demonstrated exploits capped at high? when is stored XSS
+medium, high, and critical?
+<span>README.md, line 53 — the middle question asks about a ceiling, conditioned on whether an exploit was demonstrated</span></div>
+<p class="prose">The template answers the same ground instead of asking about it:</p>
+<div class="quote">any buffer overflow, use-after-free, or double free is high+ at a minimum. If the
+overflow is controlled and may lead to RCE then it should be critical. All DoS is medium.
+<span>templates/threat_model.md, under "How you rate severity" — a floor, unconditional, whose one conditional escalates</span></div>
+<p class="prose">Between the two documents a maintainer is shown how to move a memory-safety
+finding <i>up</i>, and never how to move one <i>down</i>. The template is the file they copy.</p>
 
-<h2>What the ledger shows</h2>
+<h2>What the ledger shows maintainers do</h2>
 <p class="prose">In the revealed portion of the ledger, <b id="n-line">&nbsp;</b> carry both a
-Claude severity and a maintainer severity in exactly those classes. Each finding is counted once:
-a finding can appear under a CVE and several GHSAs at the same time, which double-counts if you
-iterate advisory records.</p>
+Claude severity and a maintainer severity in those classes. "Buffer overflow" is read as the
+ledger's four overflow classes; of the six classes that covers, four appear in the data
+(<span id="cls">&nbsp;</span>), and global-buffer-overflow and double-free have no finding with
+both severities. Each finding is counted once, since one can appear under a CVE and several GHSAs
+at the same time.</p>
 <div class="keys" id="keys"></div>
 <figure>
   <figcaption><div class="fig-t">Where each party put those findings</div>
@@ -122,9 +132,9 @@ iterate advisory records.</p>
 </figure>
 
 <h2>The more interesting half</h2>
-<p class="prose">These conventions genuinely differ between projects, and a worked example cannot
-be neutral between them. Three large C and C++ projects rate memory-safety findings at medium as a
-matter of course; the kernel, nginx and OpenSSL do not.</p>
+<p class="prose">These conventions genuinely differ between projects, and a single worked example
+cannot be neutral between them. Three large C and C++ projects rate memory-safety findings at
+medium as a matter of course; the kernel, nginx and OpenSSL do not.</p>
 <figure>
   <figcaption><div class="fig-t">Maintainer severity by project</div>
     <div class="fig-s">Every project in the measured slice, largest first.</div></figcaption>
@@ -132,6 +142,13 @@ matter of course; the kernel, nginx and OpenSSL do not.</p>
     <thead><tr><th>Project</th><th class="num">n</th><th>Bands the maintainer assigned</th>
     <th class="num">At or above floor</th></tr></thead><tbody></tbody></table></div>
 </figure>
+
+<h2>The suggestion, which costs one edit</h2>
+<p class="prose">The README already has the better instinct: it asks the maintainer what their
+convention is, capping included. The template states one instead, and the template is what gets
+copied. Having it ask rather than answer — or carry two contrasting conventions rather than one —
+would make clearer that the file wants the maintainer's scale, not a recommended one, and would
+give them the downward conditional neither document currently offers.</p>
 
 <h2>What would make this wrong</h2>
 <ul class="prose">
@@ -145,6 +162,9 @@ matter of course; the kernel, nginx and OpenSSL do not.</p>
   distances, because CVSS band widths are not equal.</li>
   <li><b>It may be deliberate.</b> If the example states a floor the pipeline should apply whatever
   maintainers do, this is simply the size of that intended gap.</li>
+  <li><b>Two different artefacts.</b> The severity a maintainer publishes in an advisory and the
+  severity they would write into a threat model need not be the same thing. Treating the first as
+  evidence about the second is an assumption, not a measurement.</li>
 </ul>
 
 <h2>Reproducing it</h2>
@@ -174,6 +194,9 @@ function el(n, a, t){ var e = document.createElementNS(NS, n);
 
 document.getElementById('n-line').textContent =
   R.n + ' findings across ' + R.projects + ' projects';
+document.getElementById('cls').textContent =
+  Object.keys(R.classes).sort(function(a, b){ return R.classes[b] - R.classes[a]; })
+    .map(function(k){ return k + ' ' + R.classes[k]; }).join(', ');
 
 (function keys(){
   var wrap = document.getElementById('keys');
