@@ -1,0 +1,855 @@
+{
+  "paired": {
+    "n": 118,
+    "claude": {
+      "label": "Claude vs maintainer",
+      "kappa": 0.03476482617586918,
+      "kappa_lo95": -0.048530416951469535,
+      "kappa_hi95": 0.12432926133120215,
+      "exact_pct": 38.983050847457626,
+      "chance_pct": 36.785406492387246,
+      "mean_gap": 0.635593220338983,
+      "hotter_pct": 55.08474576271186,
+      "cooler_pct": 5.932203389830509,
+      "confusion": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          5,
+          1,
+          0
+        ],
+        [
+          8,
+          37,
+          40,
+          6
+        ],
+        [
+          0,
+          9,
+          10,
+          0
+        ]
+      ]
+    },
+    "vendor": {
+      "label": "Triage firm vs maintainer",
+      "kappa": 0.030367988567345572,
+      "kappa_lo95": -0.06009469467038975,
+      "kappa_hi95": 0.12875647668393786,
+      "exact_pct": 41.52542372881356,
+      "chance_pct": 39.69405343292157,
+      "mean_gap": 0.5423728813559322,
+      "hotter_pct": 51.69491525423729,
+      "cooler_pct": 6.779661016949152,
+      "confusion": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          6,
+          2,
+          0
+        ],
+        [
+          8,
+          42,
+          42,
+          6
+        ],
+        [
+          0,
+          3,
+          7,
+          0
+        ]
+      ]
+    },
+    "kappa_difference": {
+      "observed": 0.004396837608523607,
+      "lo95": -0.0692643121546399,
+      "hi95": 0.0751264608407467,
+      "p_positive": 0.5488,
+      "verdict": "not distinguishable from zero"
+    },
+    "gap_difference": {
+      "observed": 0.09322033898305082,
+      "lo95": 0.025423728813559365,
+      "hi95": 0.1610169491525424,
+      "p_positive": 0.9968,
+      "verdict": "distinguishable from zero"
+    },
+    "finders_against_each_other": {
+      "kappa": 0.5778619528619529,
+      "exact_pct": 85.59322033898304
+    }
+  },
+  "soundness": {
+    "reproduced": [
+      {
+        "figure": "severity exact agreement (%)",
+        "published": 83.0,
+        "recomputed": 83.0,
+        "ok": true
+      },
+      {
+        "figure": "severity within one band (%)",
+        "published": 97.1,
+        "recomputed": 97.1,
+        "ok": true
+      },
+      {
+        "figure": "severity comparison n",
+        "published": 1337,
+        "recomputed": 1337,
+        "ok": true
+      },
+      {
+        "figure": "true positive rate (%)",
+        "published": 92.7,
+        "recomputed": 92.7,
+        "ok": true
+      },
+      {
+        "figure": "disclosed findings",
+        "published": 6157,
+        "recomputed": 6157,
+        "ok": true
+      },
+      {
+        "figure": "projects",
+        "published": 591,
+        "recomputed": 591,
+        "ok": true
+      },
+      {
+        "figure": "CVEs",
+        "published": 219,
+        "recomputed": 219,
+        "ok": true
+      },
+      {
+        "figure": "GHSAs",
+        "published": 365,
+        "recomputed": 365,
+        "ok": true
+      },
+      {
+        "figure": "acknowledged",
+        "published": 5103,
+        "recomputed": 5103,
+        "ok": true
+      },
+      {
+        "figure": "candidates analysed",
+        "published": 29439,
+        "recomputed": 29439,
+        "ok": true
+      }
+    ],
+    "all_reproduced": true,
+    "verdict": "SOUND",
+    "ledger_entries": 6597
+  },
+  "agreement": [
+    {
+      "n": 1337,
+      "exact_pct": 83.02169035153328,
+      "within_one_pct": 97.08302169035153,
+      "chance_pct": 51.59677752299352,
+      "kappa": 0.6492318325183388,
+      "quadratic_kappa": 0.5839406532955891,
+      "mean_gap": 0.13014210919970082,
+      "left_higher_pct": 13.462976813762154,
+      "left_lower_pct": 3.5153328347045623,
+      "inflation_ratio": 3.8297872340425534,
+      "confusion": [
+        [
+          18,
+          3,
+          0,
+          3
+        ],
+        [
+          2,
+          148,
+          25,
+          2
+        ],
+        [
+          12,
+          23,
+          828,
+          14
+        ],
+        [
+          15,
+          7,
+          121,
+          116
+        ]
+      ],
+      "row_marginals": [
+        24,
+        177,
+        877,
+        259
+      ],
+      "column_marginals": [
+        47,
+        181,
+        974,
+        135
+      ],
+      "left": "claude_sev",
+      "right": "vendor_sev",
+      "title": "Claude vs triage firm",
+      "why": "the comparison Anthropic published",
+      "kappa_ci": {
+        "lo95": 0.6078659106720304,
+        "hi95": 0.6885071846757826,
+        "draws_used": 5000
+      },
+      "quadratic_kappa_ci": {
+        "lo95": 0.5114389104619623,
+        "hi95": 0.6534858750786775,
+        "draws_used": 5000
+      }
+    },
+    {
+      "n": 163,
+      "exact_pct": 46.012269938650306,
+      "within_one_pct": 88.34355828220859,
+      "chance_pct": 39.19981933832662,
+      "kappa": 0.1120465519376006,
+      "quadratic_kappa": 0.1836393989983306,
+      "mean_gap": 0.5153374233128835,
+      "left_higher_pct": 46.625766871165645,
+      "left_lower_pct": 7.361963190184049,
+      "inflation_ratio": 6.333333333333333,
+      "confusion": [
+        [
+          2,
+          2,
+          0,
+          0
+        ],
+        [
+          2,
+          6,
+          1,
+          0
+        ],
+        [
+          9,
+          45,
+          64,
+          9
+        ],
+        [
+          1,
+          9,
+          10,
+          3
+        ]
+      ],
+      "row_marginals": [
+        4,
+        9,
+        127,
+        23
+      ],
+      "column_marginals": [
+        14,
+        62,
+        75,
+        12
+      ],
+      "left": "claude_sev",
+      "right": "maintainer_sev",
+      "title": "Claude vs maintainer",
+      "why": "the people who decide whether to act",
+      "kappa_ci": {
+        "lo95": 0.03016003282724644,
+        "hi95": 0.2003270645952575,
+        "draws_used": 5000
+      },
+      "quadratic_kappa_ci": {
+        "lo95": 0.058739521887612556,
+        "hi95": 0.3042132360129036,
+        "draws_used": 5000
+      }
+    },
+    {
+      "n": 118,
+      "exact_pct": 41.52542372881356,
+      "within_one_pct": 90.67796610169492,
+      "chance_pct": 39.69405343292157,
+      "kappa": 0.030367988567345572,
+      "quadratic_kappa": 0.14212401995723456,
+      "mean_gap": 0.5423728813559322,
+      "left_higher_pct": 51.69491525423729,
+      "left_lower_pct": 6.779661016949152,
+      "inflation_ratio": 7.625,
+      "confusion": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          6,
+          2,
+          0
+        ],
+        [
+          8,
+          42,
+          42,
+          6
+        ],
+        [
+          0,
+          3,
+          7,
+          0
+        ]
+      ],
+      "row_marginals": [
+        1,
+        9,
+        98,
+        10
+      ],
+      "column_marginals": [
+        10,
+        51,
+        51,
+        6
+      ],
+      "left": "vendor_sev",
+      "right": "maintainer_sev",
+      "title": "Triage firm vs maintainer",
+      "why": "the control: human finders, same maintainers",
+      "kappa_ci": {
+        "lo95": -0.06009469467038975,
+        "hi95": 0.12875647668393786,
+        "draws_used": 5000
+      },
+      "quadratic_kappa_ci": {
+        "lo95": 0.03512064343163557,
+        "hi95": 0.2676124455908432,
+        "draws_used": 5000
+      }
+    },
+    {
+      "n": 1382,
+      "exact_pct": 78.4370477568741,
+      "within_one_pct": 95.80318379160637,
+      "chance_pct": 49.62501125699242,
+      "kappa": 0.5719512245822784,
+      "quadratic_kappa": 0.5155589846691421,
+      "mean_gap": 0.17872648335745298,
+      "left_higher_pct": 17.510853835021706,
+      "left_lower_pct": 4.052098408104197,
+      "inflation_ratio": 4.321428571428571,
+      "confusion": [
+        [
+          19,
+          5,
+          0,
+          3
+        ],
+        [
+          4,
+          148,
+          25,
+          2
+        ],
+        [
+          21,
+          65,
+          806,
+          21
+        ],
+        [
+          16,
+          16,
+          120,
+          111
+        ]
+      ],
+      "row_marginals": [
+        27,
+        179,
+        913,
+        263
+      ],
+      "column_marginals": [
+        60,
+        234,
+        951,
+        137
+      ],
+      "left": "claude_sev",
+      "right": "resolved_sev",
+      "title": "Claude vs resolved",
+      "why": "the ledger's own settled band",
+      "kappa_ci": {
+        "lo95": 0.5296456848063626,
+        "hi95": 0.6117977528089887,
+        "draws_used": 5000
+      },
+      "quadratic_kappa_ci": {
+        "lo95": 0.4475773778635559,
+        "hi95": 0.5819280904030465,
+        "draws_used": 5000
+      }
+    }
+  ],
+  "calibration": {
+    "joined_findings": 157,
+    "classes": [
+      {
+        "bug_class": "heap-buffer-overflow",
+        "projects": [
+          "bytecodealliance/wasm-micro-runtime",
+          "dnsmasq",
+          "freerdp/freerdp",
+          "imagemagick/imagemagick",
+          "jqlang/jq",
+          "libass/libass",
+          "libexpat/libexpat",
+          "libgit2/libgit2",
+          "libreoffice/core",
+          "mapserver",
+          "nginx/nginx",
+          "nss",
+          "openexr",
+          "rabbitmq-c",
+          "wireshark/wireshark",
+          "wolfssl/wolfssl"
+        ],
+        "n_vs_vendor": 49,
+        "mean_vs_vendor": 0.08163265306122448,
+        "n_vs_maintainer": 28,
+        "mean_vs_maintainer": 0.8214285714285714
+      },
+      {
+        "bug_class": "use-after-free",
+        "projects": [
+          "cesnet/libyang",
+          "freebsd/freebsd-src",
+          "libreoffice/core",
+          "oisf/suricata",
+          "openssl/openssl",
+          "torvalds/linux",
+          "util-linux/util-linux"
+        ],
+        "n_vs_vendor": 12,
+        "mean_vs_vendor": 0.5,
+        "n_vs_maintainer": 9,
+        "mean_vs_maintainer": 0.2222222222222222
+      },
+      {
+        "bug_class": "stack-buffer-overflow",
+        "projects": [
+          "asterisk/asterisk",
+          "cesnet/libyang",
+          "freebsd/freebsd-src",
+          "gpg/libgcrypt",
+          "libreoffice/core",
+          "opensc",
+          "wireshark/wireshark"
+        ],
+        "n_vs_vendor": 8,
+        "mean_vs_vendor": 0.125,
+        "n_vs_maintainer": 9,
+        "mean_vs_maintainer": 0.8888888888888888
+      },
+      {
+        "bug_class": "integer-overflow",
+        "projects": [
+          "cisco-talos/clamav",
+          "open62541/open62541",
+          "wolfssl/wolfssl"
+        ],
+        "n_vs_vendor": 8,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 8,
+        "mean_vs_maintainer": 0.0
+      },
+      {
+        "bug_class": "crypto-failure",
+        "projects": [
+          "wolfssl/wolfssl"
+        ],
+        "n_vs_vendor": 5,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 5,
+        "mean_vs_maintainer": 0.4
+      },
+      {
+        "bug_class": "denial-of-service",
+        "projects": [
+          "dnsmasq",
+          "jetty/jetty.project",
+          "postgres/postgres"
+        ],
+        "n_vs_vendor": 5,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 4,
+        "mean_vs_maintainer": 0.5
+      },
+      {
+        "bug_class": "sql-injection",
+        "projects": [
+          "dhis2/dhis2-core",
+          "openmeterio/openmeter",
+          "rocketchat/rocket.chat",
+          "tryghost/ghost"
+        ],
+        "n_vs_vendor": 4,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 5,
+        "mean_vs_maintainer": 0.4
+      },
+      {
+        "bug_class": "path-traversal",
+        "projects": [
+          "joomla/joomla-cms",
+          "junrar"
+        ],
+        "n_vs_vendor": 4,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 5,
+        "mean_vs_maintainer": 0.6
+      },
+      {
+        "bug_class": "auth-bypass",
+        "projects": [
+          "freerdp/freerdp",
+          "rocketchat/rocket.chat",
+          "twigphp/twig"
+        ],
+        "n_vs_vendor": 5,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 3,
+        "mean_vs_maintainer": 0.0
+      },
+      {
+        "bug_class": "other",
+        "projects": [
+          "libreoffice/core",
+          "wireshark/wireshark",
+          "wolfssl/wolfssl"
+        ],
+        "n_vs_vendor": 3,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 4,
+        "mean_vs_maintainer": 1.25
+      },
+      {
+        "bug_class": "buffer-overflow",
+        "projects": [
+          "wireshark/wireshark",
+          "wolfssl/wolfssl"
+        ],
+        "n_vs_vendor": 3,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 3,
+        "mean_vs_maintainer": 1.0
+      },
+      {
+        "bug_class": "oob-write",
+        "projects": [
+          "freerdp/freerdp",
+          "libreoffice/core",
+          "libvips/libvips"
+        ],
+        "n_vs_vendor": 5,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 1,
+        "mean_vs_maintainer": 1.0
+      },
+      {
+        "bug_class": "signature-bypass",
+        "projects": [
+          "mastodon/mastodon",
+          "wolfssl/wolfssl"
+        ],
+        "n_vs_vendor": 4,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 2,
+        "mean_vs_maintainer": 0.0
+      },
+      {
+        "bug_class": "integer-underflow",
+        "projects": [
+          "cisco-talos/clamav",
+          "rabbitmq-c"
+        ],
+        "n_vs_vendor": 3,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 2,
+        "mean_vs_maintainer": 0.0
+      },
+      {
+        "bug_class": "double-free",
+        "projects": [
+          "freerdp/freerdp",
+          "libssh2/libssh2"
+        ],
+        "n_vs_vendor": 5,
+        "mean_vs_vendor": 0.2,
+        "n_vs_maintainer": 0,
+        "mean_vs_maintainer": null
+      },
+      {
+        "bug_class": "improper-cert-validation",
+        "projects": [
+          "randombit/botan",
+          "wolfssl/wolfssl"
+        ],
+        "n_vs_vendor": 2,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 2,
+        "mean_vs_maintainer": 0.0
+      },
+      {
+        "bug_class": "symlink-following",
+        "projects": [
+          "opencontainers/runc"
+        ],
+        "n_vs_vendor": 2,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 2,
+        "mean_vs_maintainer": 1.0
+      },
+      {
+        "bug_class": "code-injection",
+        "projects": [
+          "twigphp/twig"
+        ],
+        "n_vs_vendor": 2,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 2,
+        "mean_vs_maintainer": -1.0
+      },
+      {
+        "bug_class": "xss",
+        "projects": [
+          "typo3"
+        ],
+        "n_vs_vendor": 2,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 2,
+        "mean_vs_maintainer": 1.0
+      },
+      {
+        "bug_class": "idor",
+        "projects": [
+          "go-gitea/gitea"
+        ],
+        "n_vs_vendor": 2,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 2,
+        "mean_vs_maintainer": 1.0
+      },
+      {
+        "bug_class": "rce",
+        "projects": [
+          "freerdp/freerdp",
+          "gitoxidelabs/gitoxide"
+        ],
+        "n_vs_vendor": 2,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 1,
+        "mean_vs_maintainer": 0.0
+      },
+      {
+        "bug_class": "off-by-one",
+        "projects": [
+          "exim/exim"
+        ],
+        "n_vs_vendor": 1,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 1,
+        "mean_vs_maintainer": 1.0
+      },
+      {
+        "bug_class": "ssrf",
+        "projects": [
+          "mastodon/mastodon"
+        ],
+        "n_vs_vendor": 2,
+        "mean_vs_vendor": 0.0,
+        "n_vs_maintainer": 0,
+        "mean_vs_maintainer": null
+      },
+      {
+        "bug_class": "broken-access-control",
+        "projects": [
+          "temporalio/temporal"
+        ],
+        "n_vs_vendor": 0,
+        "mean_vs_vendor": null,
+        "n_vs_maintainer": 1,
+        "mean_vs_maintainer": 3.0
+      },
+      {
+        "bug_class": "privilege-escalation",
+        "projects": [
+          "craftcms/cms"
+        ],
+        "n_vs_vendor": 0,
+        "mean_vs_vendor": null,
+        "n_vs_maintainer": 1,
+        "mean_vs_maintainer": 0.0
+      },
+      {
+        "bug_class": "oob-read",
+        "projects": [
+          "firecracker-microvm/firecracker"
+        ],
+        "n_vs_vendor": 0,
+        "mean_vs_vendor": null,
+        "n_vs_maintainer": 0,
+        "mean_vs_maintainer": null
+      }
+    ]
+  },
+  "consistency": {
+    "checks": [
+      {
+        "aggregate": "total_fixed",
+        "aggregate_value": 218,
+        "compared_with": "ledger is_fixed",
+        "ledger_value": 218,
+        "delta": 0,
+        "verdict": "matches"
+      },
+      {
+        "aggregate": "total_disclosed",
+        "aggregate_value": 6157,
+        "compared_with": "ledger was_disclosed",
+        "ledger_value": 6154,
+        "delta": 3,
+        "verdict": "open"
+      },
+      {
+        "aggregate": "withdrawn flag",
+        "aggregate_value": 243,
+        "compared_with": "status == 'withdrawn'",
+        "ledger_value": 246,
+        "delta": -3,
+        "verdict": "open"
+      },
+      {
+        "aggregate": "total_revealed",
+        "aggregate_value": 235,
+        "compared_with": "reveal_tier == 'revealed'",
+        "ledger_value": 237,
+        "delta": -2,
+        "verdict": "open"
+      },
+      {
+        "aggregate": "total_verified",
+        "aggregate_value": 5674,
+        "compared_with": "ledger vendor_confirmed",
+        "ledger_value": 232,
+        "delta": 5442,
+        "verdict": "sealed"
+      },
+      {
+        "aggregate": "total_cves",
+        "aggregate_value": 219,
+        "compared_with": "sum of ledger cve_ids",
+        "ledger_value": 103,
+        "delta": 116,
+        "verdict": "sealed"
+      },
+      {
+        "aggregate": "total_ghsas",
+        "aggregate_value": 365,
+        "compared_with": "sum of ledger ghsa_ids",
+        "ledger_value": 90,
+        "delta": 275,
+        "verdict": "sealed"
+      },
+      {
+        "aggregate": "total_fixed_in_response",
+        "aggregate_value": 516,
+        "compared_with": "ledger is_fixed_in_response",
+        "ledger_value": 218,
+        "delta": 298,
+        "verdict": "sealed"
+      },
+      {
+        "aggregate": "project_count",
+        "aggregate_value": 591,
+        "compared_with": "by_project entries",
+        "ledger_value": 113,
+        "delta": 478,
+        "verdict": "sealed"
+      },
+      {
+        "aggregate": "headline.analyzed",
+        "aggregate_value": 29439,
+        "compared_with": "ledger entries",
+        "ledger_value": 6597,
+        "delta": 22842,
+        "verdict": "funnel"
+      }
+    ],
+    "open_count": 3,
+    "ledger_entries": 6597,
+    "entries_with_detail": 237,
+    "detail_share_pct": 3.5925420645748067,
+    "reveal_tiers": {
+      "acknowledged_by_maintainer": 4868,
+      "discovered": 438,
+      "revealed": 237,
+      "sent": 1054
+    },
+    "status_counts": {
+      "null": 195,
+      "merged": 2,
+      "withdrawn": 246,
+      "fixed": 218,
+      "disclosed": 5936
+    },
+    "patch_acceptance": {
+      "cited": 0,
+      "informed": 0,
+      "near_verbatim": 0,
+      "total_with_proposed_patch": 2
+    },
+    "snapshot": {
+      "revision": 35,
+      "as_of": "2026-10-02T19:47:20.314425Z",
+      "analysis_until": "2026-10-02T23:59:59Z",
+      "manifest_sha3": "1fca6b3bafbdab0c2a55896e88c547016e90b28c554dc0b051895fc5639b0e5160b07598ccb6d2dcbfb9277b09a99ea81b4a4ba49cf36796a76fa7b6d97888f9"
+    },
+    "hashes": {
+      "entries": 6597,
+      "present": 6597,
+      "distinct": 6597,
+      "bits": [
+        512
+      ]
+    }
+  }
+}
