@@ -21,13 +21,66 @@ import stats  # noqa: E402
 I = stats.INDEX
 
 
-def triples(document):
+def triples(document, with_date=False):
     """Findings where Claude, the firm and the maintainer all assigned a band."""
     out = []
     for p in document["severity_pairs"]:
         c, v, m = I.get(p.get("claude_sev")), I.get(p.get("vendor_sev")), I.get(p.get("maintainer_sev"))
         if None not in (c, v, m):
-            out.append((c, v, m))
+            out.append((c, v, m, p.get("discovered_on")) if with_date else (c, v, m))
+    return out
+
+
+def clustered(document, seed=20261009, draws=10000):
+    """The same comparison with intervals that resample discovery dates, not findings.
+
+    These findings arrive in batches: 22 discovery dates carry the 118 triples and
+    the largest supplies 37% of them. Resampling findings assumes 118 independent
+    observations, which is not what the data is. These are the intervals the
+    conclusions should be read against; the finding-level ones above are narrower
+    than the evidence supports.
+    """
+    rows = triples(document, with_date=True)
+    n = len(rows)
+    if not n:
+        return {"n": 0}
+    groups = {}
+    for r in rows:
+        groups.setdefault(r[3], []).append(r)
+    keys = list(groups)
+    generator = random.Random(seed)
+
+    def draw():
+        pooled = []
+        for _ in range(len(keys)):
+            pooled.extend(groups[keys[generator.randrange(len(keys))]])
+        return pooled
+
+    acc = {"kappa_difference": [], "gap_difference": [], "claude_gap": [], "vendor_gap": []}
+    for _ in range(draws):
+        s = draw()
+        if len(s) < 8:
+            continue
+        a, b = stats.kappa([(x[0], x[2]) for x in s]), stats.kappa([(x[1], x[2]) for x in s])
+        if a is not None and b is not None:
+            acc["kappa_difference"].append(a - b)
+        acc["claude_gap"].append(sum(x[0] - x[2] for x in s) / len(s))
+        acc["vendor_gap"].append(sum(x[1] - x[2] for x in s) / len(s))
+        acc["gap_difference"].append(acc["claude_gap"][-1] - acc["vendor_gap"][-1])
+
+    observed = {
+        "kappa_difference": stats.kappa([(c, m) for c, v, m, _ in rows]) - stats.kappa([(v, m) for c, v, m, _ in rows]),
+        "gap_difference": sum(c - v for c, v, m, _ in rows) / n,
+        "claude_gap": sum(c - m for c, v, m, _ in rows) / n,
+        "vendor_gap": sum(v - m for c, v, m, _ in rows) / n,
+    }
+
+    out = {"n": n, "clusters": len(keys), "largest_cluster": max(len(g) for g in groups.values())}
+    for key, values in acc.items():
+        values.sort()
+        lo, hi = values[int(0.025 * len(values))], values[int(0.975 * len(values))]
+        out[key] = {"observed": observed[key], "lo95": lo, "hi95": hi,
+                    "excludes_zero": not (lo <= 0 <= hi)}
     return out
 
 
@@ -79,6 +132,7 @@ def report(document, draws=10000, seed=20261009):
 
     both = stats.summarise([(c, v) for c, v, m in rows])
     out["finders_against_each_other"] = {"kappa": both["kappa"], "exact_pct": both["exact_pct"]}
+    out["clustered"] = clustered(document, seed=seed, draws=draws)
     return out
 
 

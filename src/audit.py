@@ -30,7 +30,9 @@ import sys
 # Isolated mode also drops the script's own directory, so add just that back.
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
-import paired  # noqa: E402 - must follow the sys.path line above
+import calibration  # noqa: E402 - must follow the sys.path line above
+import concentration  # noqa: E402
+import paired  # noqa: E402
 import stats  # noqa: E402
 
 # What Anthropic states in prose at red.anthropic.com/2026/cvd/ and in the
@@ -127,46 +129,6 @@ def agreement(document, draws):
     return results
 
 
-def calibration_by_class(document):
-    """Per-bug-class severity gap, joined through the revealed CVE/GHSA records.
-
-    `severity_cells` holds "claude|vendor|maintainer" per finding, aligned with
-    `findings`, which carries the bug class. This is the only join in the public
-    data from a severity triple to a bug class, and it covers the revealed
-    subset only.
-    """
-    buckets = {}
-    joined = 0
-    for record in document["cve_records"] + document["ghsa_records"]:
-        cells = record.get("severity_cells") or []
-        for finding, cell in zip(record.get("findings") or [], cells):
-            parts = (cell.split("|") + [None, None, None])[:3]
-            claude, vendor, maintainer = parts
-            bug_class = finding.get("bug_class") or "unclassified"
-            bucket = buckets.setdefault(bug_class, {"vs_vendor": [], "vs_maintainer": [], "projects": set()})
-            if finding.get("project"):
-                bucket["projects"].add(finding["project"])
-            joined += 1
-            for key, other in (("vs_vendor", vendor), ("vs_maintainer", maintainer)):
-                a, b = stats.INDEX.get(claude), stats.INDEX.get(other)
-                if a is not None and b is not None:
-                    bucket[key].append(a - b)
-
-    rows = []
-    for bug_class, bucket in buckets.items():
-        row = {"bug_class": bug_class, "projects": sorted(bucket["projects"])}
-        for key in ("vs_vendor", "vs_maintainer"):
-            gaps = bucket[key]
-            row[f"n_{key}"] = len(gaps)
-            row[f"mean_{key}"] = (sum(gaps) / len(gaps)) if gaps else None
-        rows.append(row)
-    rows.sort(key=lambda r: -(r["n_vs_vendor"] + r["n_vs_maintainer"]))
-    return {"joined_findings": joined, "classes": rows}
-
-
-# --------------------------------------------------------------------------- 3
-
-
 def consistency(document):
     """Reconcile top-level aggregates against the per-entry ledger.
 
@@ -245,6 +207,7 @@ def build(document, draws=5000):
     rows, sound, entries = reproduce(document)
     return {
         "paired": paired.report(document, draws=draws),
+        "concentration": concentration.report(document),
         "soundness": {
             "reproduced": [{"figure": f, "published": p, "recomputed": g, "ok": ok} for f, p, g, ok in rows],
             "all_reproduced": sound,
@@ -252,7 +215,7 @@ def build(document, draws=5000):
             "ledger_entries": entries,
         },
         "agreement": agreement(document, draws),
-        "calibration": calibration_by_class(document),
+        "calibration": calibration.report(document),
         "consistency": consistency(document),
     }
 
@@ -293,6 +256,23 @@ def main():
         print(f"  {label:<26} {dv['observed']:+.3f}  95% [{dv['lo95']:+.3f},{dv['hi95']:+.3f}]  -> {dv['verdict']}")
     print(f"  the two finders against each other: kappa {pr['finders_against_each_other']['kappa']:+.3f}"
           f"  exact {pr['finders_against_each_other']['exact_pct']:.1f}%")
+
+    cc = report["concentration"]
+    print(f"\nconcentration: {cc['n']:,} paired findings over {cc['distinct_dates']} discovery dates")
+    print(f"  pooled {cc['pooled_exact_pct']:.1f}%  |  {cc['dominant_date']} batch {cc['dominant_exact_pct']:.1f}% "
+          f"(n={cc['dominant_n']}, {cc['dominant_share_pct']:.1f}% of evidence)  |  rest {cc['without_dominant_exact_pct']:.1f}%")
+    print(f"  date-clustered 95% on the pooled rate: [{cc['clustered_lo95_pct']:.1f}%, {cc['clustered_hi95_pct']:.1f}%]")
+
+    cal = report["calibration"]
+    dd = cal["deduplication"]
+    print(f"\ncalibration: {dd['advisory_slots']} advisory slots -> {dd['unique_findings']} unique findings "
+          f"({dd['repeats_removed']} repeats removed)")
+    for row in [cal["pooled"]] + cal["buckets"]:
+        if not row["n"]:
+            continue
+        mark = "excludes zero" if row.get("excludes_zero") else "INCLUDES ZERO"
+        print(f"  {row['label']:<28} n={row['n']:<4} proj={row['projects']:<3} {row['mean_gap']:+.2f} bands "
+              f"95% [{row['lo95']:+.2f},{row['hi95']:+.2f}]  {mark}")
 
     c = report["consistency"]
     print(f"\nconsistency: {c['open_count']} unexplained of {len(c['checks'])} checks; "

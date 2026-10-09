@@ -117,3 +117,45 @@ def bootstrap(observations, statistic, draws=5000, seed=20261009):
     values.sort()
     at = lambda q: values[min(len(values) - 1, max(0, int(q * len(values))))]  # noqa: E731
     return {"lo95": at(0.025), "hi95": at(0.975), "draws_used": len(values)}
+
+
+def cluster_bootstrap(groups, statistic, draws=5000, seed=20261009):
+    """Percentile interval that resamples GROUPS rather than observations.
+
+    Findings in this ledger are not independent. They arrive in batches sharing a
+    discovery date, and they cluster by project: two projects supply 12 of the 66
+    deduplicated advisory findings. Resampling individual findings treats each as
+    its own piece of evidence and produces intervals that are too narrow. This
+    resamples whole clusters, which is the unit that was actually sampled.
+
+    `groups` is a dict of cluster key -> list of observations. `statistic` takes
+    the pooled list of observations and returns a number, or None when undefined.
+    """
+    keys = list(groups)
+    if not keys:
+        return None
+    generator = random.Random(seed)
+    values = []
+    for _ in range(draws):
+        pooled = []
+        for _ in range(len(keys)):
+            pooled.extend(groups[keys[generator.randrange(len(keys))]])
+        value = statistic(pooled)
+        if value is not None:
+            values.append(value)
+    if not values:
+        return None
+    values.sort()
+    at = lambda q: values[min(len(values) - 1, max(0, int(q * len(values))))]  # noqa: E731
+    return {
+        "lo95": at(0.025),
+        "hi95": at(0.975),
+        "clusters": len(keys),
+        "draws_used": len(values),
+        "excludes_zero": not (at(0.025) <= 0 <= at(0.975)),
+    }
+
+
+def mean(values):
+    """Mean of a list, or None when empty. Used as the statistic in cluster_bootstrap."""
+    return (sum(values) / len(values)) if values else None

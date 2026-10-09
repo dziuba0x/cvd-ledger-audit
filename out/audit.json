@@ -92,7 +92,114 @@
     "finders_against_each_other": {
       "kappa": 0.5778619528619529,
       "exact_pct": 85.59322033898304
+    },
+    "clustered": {
+      "n": 118,
+      "clusters": 22,
+      "largest_cluster": 44,
+      "kappa_difference": {
+        "observed": 0.004396837608523607,
+        "lo95": -0.09207289529551954,
+        "hi95": 0.0708551785662428,
+        "excludes_zero": false
+      },
+      "gap_difference": {
+        "observed": 0.09322033898305085,
+        "lo95": 0.015789473684210575,
+        "hi95": 0.2909090909090909,
+        "excludes_zero": true
+      },
+      "claude_gap": {
+        "observed": 0.635593220338983,
+        "lo95": 0.43,
+        "hi95": 0.9772727272727273,
+        "excludes_zero": true
+      },
+      "vendor_gap": {
+        "observed": 0.5423728813559322,
+        "lo95": 0.3764705882352941,
+        "hi95": 0.734375,
+        "excludes_zero": true
+      }
     }
+  },
+  "concentration": {
+    "n": 1337,
+    "distinct_dates": 50,
+    "pooled_exact_pct": 83.02169035153328,
+    "dominant_date": "2026-04-02",
+    "dominant_n": 591,
+    "dominant_share_pct": 44.203440538519075,
+    "dominant_exact_pct": 93.90862944162437,
+    "without_dominant_n": 746,
+    "without_dominant_exact_pct": 74.39678284182305,
+    "clustered_lo95_pct": 66.5764546684709,
+    "clustered_hi95_pct": 90.50056882821387,
+    "top_dates": [
+      {
+        "date": "2026-04-02",
+        "n": 591,
+        "share_pct": 44.203440538519075,
+        "exact_pct": 93.90862944162437
+      },
+      {
+        "date": "2026-03-24",
+        "n": 158,
+        "share_pct": 11.81750186985789,
+        "exact_pct": 57.59493670886076
+      },
+      {
+        "date": "2026-03-29",
+        "n": 115,
+        "share_pct": 8.601346297681376,
+        "exact_pct": 97.3913043478261
+      },
+      {
+        "date": "2026-09-19",
+        "n": 55,
+        "share_pct": 4.113687359760658,
+        "exact_pct": 78.18181818181819
+      },
+      {
+        "date": "2026-04-09",
+        "n": 40,
+        "share_pct": 2.9917726252804786,
+        "exact_pct": 95.0
+      },
+      {
+        "date": "2026-03-30",
+        "n": 39,
+        "share_pct": 2.9169783096484667,
+        "exact_pct": 79.48717948717949
+      }
+    ],
+    "by_month": [
+      {
+        "month": "2026-03",
+        "n": 371,
+        "exact_pct": 72.50673854447439
+      },
+      {
+        "month": "2026-04",
+        "n": 770,
+        "exact_pct": 88.83116883116882
+      },
+      {
+        "month": "2026-05",
+        "n": 23,
+        "exact_pct": 60.869565217391305
+      },
+      {
+        "month": "2026-06",
+        "n": 34,
+        "exact_pct": 97.05882352941177
+      },
+      {
+        "month": "2026-09",
+        "n": 119,
+        "exact_pct": 83.19327731092437
+      }
+    ]
   },
   "soundness": {
     "reproduced": [
@@ -420,316 +527,433 @@
     }
   ],
   "calibration": {
-    "joined_findings": 157,
-    "classes": [
+    "largest_sample": {
+      "n": 163,
+      "mean_gap": 0.5153374233128835,
+      "lo95": 0.39263803680981596,
+      "hi95": 0.6441717791411042,
+      "advisory_revealed_n": 67,
+      "advisory_revealed_gap": 0.6567164179104478,
+      "rest_n": 96,
+      "rest_gap": 0.4166666666666667,
+      "selection_gap": 0.24004975124378108
+    },
+    "bucket_robustness": [
       {
-        "bug_class": "heap-buffer-overflow",
-        "projects": [
-          "bytecodealliance/wasm-micro-runtime",
-          "dnsmasq",
-          "freerdp/freerdp",
-          "imagemagick/imagemagick",
-          "jqlang/jq",
-          "libass/libass",
-          "libexpat/libexpat",
-          "libgit2/libgit2",
+        "label": "spatial memory corruption",
+        "n": 29,
+        "mean_gap": 0.896551724137931,
+        "top_two": [
           "libreoffice/core",
-          "mapserver",
-          "nginx/nginx",
-          "nss",
-          "openexr",
-          "rabbitmq-c",
-          "wireshark/wireshark",
           "wolfssl/wolfssl"
         ],
-        "n_vs_vendor": 49,
-        "mean_vs_vendor": 0.08163265306122448,
-        "n_vs_maintainer": 28,
-        "mean_vs_maintainer": 0.8214285714285714
+        "top_two_share_pct": 51.724137931034484,
+        "without_top_two_n": 14,
+        "without_top_two_gap": 0.5714285714285714
       },
       {
-        "bug_class": "use-after-free",
-        "projects": [
-          "cesnet/libyang",
-          "freebsd/freebsd-src",
-          "libreoffice/core",
-          "oisf/suricata",
-          "openssl/openssl",
-          "torvalds/linux",
-          "util-linux/util-linux"
-        ],
-        "n_vs_vendor": 12,
-        "mean_vs_vendor": 0.5,
-        "n_vs_maintainer": 9,
-        "mean_vs_maintainer": 0.2222222222222222
-      },
-      {
-        "bug_class": "stack-buffer-overflow",
-        "projects": [
-          "asterisk/asterisk",
-          "cesnet/libyang",
-          "freebsd/freebsd-src",
-          "gpg/libgcrypt",
-          "libreoffice/core",
-          "opensc",
-          "wireshark/wireshark"
-        ],
-        "n_vs_vendor": 8,
-        "mean_vs_vendor": 0.125,
-        "n_vs_maintainer": 9,
-        "mean_vs_maintainer": 0.8888888888888888
-      },
-      {
-        "bug_class": "integer-overflow",
-        "projects": [
+        "label": "temporal and arithmetic",
+        "n": 11,
+        "mean_gap": 0.09090909090909091,
+        "top_two": [
           "cisco-talos/clamav",
-          "open62541/open62541",
-          "wolfssl/wolfssl"
+          "torvalds/linux"
         ],
-        "n_vs_vendor": 8,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 8,
-        "mean_vs_maintainer": 0.0
+        "top_two_share_pct": 45.45454545454545,
+        "without_top_two_n": 6,
+        "without_top_two_gap": 0.16666666666666666
       },
       {
-        "bug_class": "crypto-failure",
-        "projects": [
-          "wolfssl/wolfssl"
+        "label": "everything else",
+        "n": 26,
+        "mean_gap": 0.5769230769230769,
+        "top_two": [
+          "wolfssl/wolfssl",
+          "rocketchat/rocket.chat"
         ],
-        "n_vs_vendor": 5,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 5,
-        "mean_vs_maintainer": 0.4
-      },
-      {
-        "bug_class": "denial-of-service",
-        "projects": [
-          "dnsmasq",
-          "jetty/jetty.project",
-          "postgres/postgres"
-        ],
-        "n_vs_vendor": 5,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 4,
-        "mean_vs_maintainer": 0.5
-      },
-      {
-        "bug_class": "sql-injection",
-        "projects": [
-          "dhis2/dhis2-core",
-          "openmeterio/openmeter",
-          "rocketchat/rocket.chat",
-          "tryghost/ghost"
-        ],
-        "n_vs_vendor": 4,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 5,
-        "mean_vs_maintainer": 0.4
-      },
-      {
-        "bug_class": "path-traversal",
-        "projects": [
-          "joomla/joomla-cms",
-          "junrar"
-        ],
-        "n_vs_vendor": 4,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 5,
-        "mean_vs_maintainer": 0.6
-      },
-      {
-        "bug_class": "auth-bypass",
-        "projects": [
-          "freerdp/freerdp",
-          "rocketchat/rocket.chat",
-          "twigphp/twig"
-        ],
-        "n_vs_vendor": 5,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 3,
-        "mean_vs_maintainer": 0.0
-      },
-      {
-        "bug_class": "other",
-        "projects": [
-          "libreoffice/core",
-          "wireshark/wireshark",
-          "wolfssl/wolfssl"
-        ],
-        "n_vs_vendor": 3,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 4,
-        "mean_vs_maintainer": 1.25
-      },
-      {
-        "bug_class": "buffer-overflow",
-        "projects": [
-          "wireshark/wireshark",
-          "wolfssl/wolfssl"
-        ],
-        "n_vs_vendor": 3,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 3,
-        "mean_vs_maintainer": 1.0
-      },
-      {
-        "bug_class": "oob-write",
-        "projects": [
-          "freerdp/freerdp",
-          "libreoffice/core",
-          "libvips/libvips"
-        ],
-        "n_vs_vendor": 5,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 1,
-        "mean_vs_maintainer": 1.0
-      },
-      {
-        "bug_class": "signature-bypass",
-        "projects": [
-          "mastodon/mastodon",
-          "wolfssl/wolfssl"
-        ],
-        "n_vs_vendor": 4,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 2,
-        "mean_vs_maintainer": 0.0
-      },
-      {
-        "bug_class": "integer-underflow",
-        "projects": [
-          "cisco-talos/clamav",
-          "rabbitmq-c"
-        ],
-        "n_vs_vendor": 3,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 2,
-        "mean_vs_maintainer": 0.0
-      },
-      {
-        "bug_class": "double-free",
-        "projects": [
-          "freerdp/freerdp",
-          "libssh2/libssh2"
-        ],
-        "n_vs_vendor": 5,
-        "mean_vs_vendor": 0.2,
-        "n_vs_maintainer": 0,
-        "mean_vs_maintainer": null
-      },
-      {
-        "bug_class": "improper-cert-validation",
-        "projects": [
-          "randombit/botan",
-          "wolfssl/wolfssl"
-        ],
-        "n_vs_vendor": 2,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 2,
-        "mean_vs_maintainer": 0.0
-      },
-      {
-        "bug_class": "symlink-following",
-        "projects": [
-          "opencontainers/runc"
-        ],
-        "n_vs_vendor": 2,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 2,
-        "mean_vs_maintainer": 1.0
-      },
-      {
-        "bug_class": "code-injection",
-        "projects": [
-          "twigphp/twig"
-        ],
-        "n_vs_vendor": 2,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 2,
-        "mean_vs_maintainer": -1.0
-      },
-      {
-        "bug_class": "xss",
-        "projects": [
-          "typo3"
-        ],
-        "n_vs_vendor": 2,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 2,
-        "mean_vs_maintainer": 1.0
-      },
-      {
-        "bug_class": "idor",
-        "projects": [
-          "go-gitea/gitea"
-        ],
-        "n_vs_vendor": 2,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 2,
-        "mean_vs_maintainer": 1.0
-      },
-      {
-        "bug_class": "rce",
-        "projects": [
-          "freerdp/freerdp",
-          "gitoxidelabs/gitoxide"
-        ],
-        "n_vs_vendor": 2,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 1,
-        "mean_vs_maintainer": 0.0
-      },
-      {
-        "bug_class": "off-by-one",
-        "projects": [
-          "exim/exim"
-        ],
-        "n_vs_vendor": 1,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 1,
-        "mean_vs_maintainer": 1.0
-      },
-      {
-        "bug_class": "ssrf",
-        "projects": [
-          "mastodon/mastodon"
-        ],
-        "n_vs_vendor": 2,
-        "mean_vs_vendor": 0.0,
-        "n_vs_maintainer": 0,
-        "mean_vs_maintainer": null
-      },
-      {
-        "bug_class": "broken-access-control",
-        "projects": [
-          "temporalio/temporal"
-        ],
-        "n_vs_vendor": 0,
-        "mean_vs_vendor": null,
-        "n_vs_maintainer": 1,
-        "mean_vs_maintainer": 3.0
-      },
-      {
-        "bug_class": "privilege-escalation",
-        "projects": [
-          "craftcms/cms"
-        ],
-        "n_vs_vendor": 0,
-        "mean_vs_vendor": null,
-        "n_vs_maintainer": 1,
-        "mean_vs_maintainer": 0.0
-      },
-      {
-        "bug_class": "oob-read",
-        "projects": [
-          "firecracker-microvm/firecracker"
-        ],
-        "n_vs_vendor": 0,
-        "mean_vs_vendor": null,
-        "n_vs_maintainer": 0,
-        "mean_vs_maintainer": null
+        "top_two_share_pct": 30.76923076923077,
+        "without_top_two_n": 18,
+        "without_top_two_gap": 0.7777777777777778
       }
-    ]
+    ],
+    "deduplication": {
+      "advisory_slots": 157,
+      "unique_findings": 66,
+      "repeats_removed": 91,
+      "note": "One finding can carry a CVE and several GHSAs. Counting advisory slots counts it once per identifier and inflates every class mean."
+    },
+    "pooled": {
+      "label": "all classes, pooled",
+      "n": 66,
+      "projects": 30,
+      "mean_gap": 0.6363636363636364,
+      "lo95": 0.28888888888888886,
+      "hi95": 0.8863636363636364,
+      "excludes_zero": true,
+      "above_pct": 53.03030303030303,
+      "equal_pct": 42.42424242424242,
+      "below_pct": 4.545454545454546
+    },
+    "buckets": [
+      {
+        "label": "spatial memory corruption",
+        "n": 29,
+        "projects": 12,
+        "mean_gap": 0.896551724137931,
+        "lo95": 0.3125,
+        "hi95": 1.1,
+        "excludes_zero": true,
+        "above_pct": 75.86206896551724,
+        "equal_pct": 20.689655172413794,
+        "below_pct": 3.4482758620689653
+      },
+      {
+        "label": "temporal and arithmetic",
+        "n": 11,
+        "projects": 8,
+        "mean_gap": 0.09090909090909091,
+        "lo95": -0.25,
+        "hi95": 0.6,
+        "excludes_zero": false,
+        "above_pct": 9.090909090909092,
+        "equal_pct": 81.81818181818181,
+        "below_pct": 9.090909090909092
+      },
+      {
+        "label": "everything else",
+        "n": 26,
+        "projects": 17,
+        "mean_gap": 0.5769230769230769,
+        "lo95": 0.24324324324324326,
+        "hi95": 1.0526315789473684,
+        "excludes_zero": true,
+        "above_pct": 46.15384615384615,
+        "equal_pct": 50.0,
+        "below_pct": 3.8461538461538463
+      }
+    ],
+    "per_class_indicative": [
+      {
+        "label": "heap-buffer-overflow",
+        "n": 18,
+        "projects": 8,
+        "mean_gap": 0.8888888888888888,
+        "lo95": 0.2,
+        "hi95": 1.1538461538461537,
+        "excludes_zero": true,
+        "above_pct": 72.22222222222223,
+        "equal_pct": 22.22222222222222,
+        "below_pct": 5.555555555555555
+      },
+      {
+        "label": "stack-buffer-overflow",
+        "n": 7,
+        "projects": 5,
+        "mean_gap": 0.8571428571428571,
+        "lo95": 0.2,
+        "hi95": 1.2222222222222223,
+        "excludes_zero": true,
+        "above_pct": 71.42857142857143,
+        "equal_pct": 28.571428571428573,
+        "below_pct": 0.0
+      },
+      {
+        "label": "use-after-free",
+        "n": 6,
+        "projects": 5,
+        "mean_gap": 0.16666666666666666,
+        "lo95": -0.5,
+        "hi95": 1.0,
+        "excludes_zero": false,
+        "above_pct": 16.666666666666668,
+        "equal_pct": 66.66666666666667,
+        "below_pct": 16.666666666666668
+      }
+    ],
+    "per_class_too_thin": [
+      {
+        "label": "integer-overflow",
+        "n": 4
+      },
+      {
+        "label": "other",
+        "n": 4
+      },
+      {
+        "label": "sql-injection",
+        "n": 3
+      },
+      {
+        "label": "path-traversal",
+        "n": 3
+      },
+      {
+        "label": "crypto-failure",
+        "n": 3
+      },
+      {
+        "label": "denial-of-service",
+        "n": 2
+      },
+      {
+        "label": "buffer-overflow",
+        "n": 2
+      },
+      {
+        "label": "auth-bypass",
+        "n": 2
+      },
+      {
+        "label": "integer-underflow",
+        "n": 1
+      },
+      {
+        "label": "off-by-one",
+        "n": 1
+      },
+      {
+        "label": "symlink-following",
+        "n": 1
+      },
+      {
+        "label": "code-injection",
+        "n": 1
+      },
+      {
+        "label": "xss",
+        "n": 1
+      },
+      {
+        "label": "broken-access-control",
+        "n": 1
+      },
+      {
+        "label": "signature-bypass",
+        "n": 1
+      },
+      {
+        "label": "improper-cert-validation",
+        "n": 1
+      },
+      {
+        "label": "idor",
+        "n": 1
+      },
+      {
+        "label": "oob-write",
+        "n": 1
+      },
+      {
+        "label": "privilege-escalation",
+        "n": 1
+      },
+      {
+        "label": "rce",
+        "n": 1
+      }
+    ],
+    "min_per_class": 5,
+    "leave_one_project_out": [
+      {
+        "dropped": "wolfssl/wolfssl",
+        "dropped_n": 12,
+        "remaining_n": 54,
+        "mean_gap": 0.6481481481481481
+      },
+      {
+        "dropped": "libreoffice/core",
+        "dropped_n": 12,
+        "remaining_n": 54,
+        "mean_gap": 0.5370370370370371
+      },
+      {
+        "dropped": "wireshark/wireshark",
+        "dropped_n": 7,
+        "remaining_n": 59,
+        "mean_gap": 0.5423728813559322
+      },
+      {
+        "dropped": "cisco-talos/clamav",
+        "dropped_n": 3,
+        "remaining_n": 63,
+        "mean_gap": 0.6666666666666666
+      },
+      {
+        "dropped": "dnsmasq",
+        "dropped_n": 2,
+        "remaining_n": 64,
+        "mean_gap": 0.640625
+      }
+    ],
+    "representativeness": {
+      "slice_size": 66,
+      "revealed_rows": 235,
+      "population": 6154,
+      "slice_share_of_population_pct": 1.0724731881702958,
+      "classes": [
+        {
+          "bug_class": "heap-buffer-overflow",
+          "slice_n": 18,
+          "slice_pct": 27.272727272727273,
+          "population_n": 334,
+          "population_pct": 5.4273643158921026
+        },
+        {
+          "bug_class": "stack-buffer-overflow",
+          "slice_n": 7,
+          "slice_pct": 10.606060606060606,
+          "population_n": 111,
+          "population_pct": 1.8037049073773155
+        },
+        {
+          "bug_class": "use-after-free",
+          "slice_n": 6,
+          "slice_pct": 9.090909090909092,
+          "population_n": 145,
+          "population_pct": 2.3561910952226195
+        },
+        {
+          "bug_class": "integer-overflow",
+          "slice_n": 4,
+          "slice_pct": 6.0606060606060606,
+          "population_n": 73,
+          "population_pct": 1.1862203444913877
+        },
+        {
+          "bug_class": "other",
+          "slice_n": 4,
+          "slice_pct": 6.0606060606060606,
+          "population_n": 2434,
+          "population_pct": 39.551511212219694
+        },
+        {
+          "bug_class": "sql-injection",
+          "slice_n": 3,
+          "slice_pct": 4.545454545454546,
+          "population_n": 44,
+          "population_pct": 0.7149821254468638
+        },
+        {
+          "bug_class": "path-traversal",
+          "slice_n": 3,
+          "slice_pct": 4.545454545454546,
+          "population_n": 196,
+          "population_pct": 3.184920376990575
+        },
+        {
+          "bug_class": "crypto-failure",
+          "slice_n": 3,
+          "slice_pct": 4.545454545454546,
+          "population_n": 76,
+          "population_pct": 1.2349691257718558
+        },
+        {
+          "bug_class": "denial-of-service",
+          "slice_n": 2,
+          "slice_pct": 3.0303030303030303,
+          "population_n": 468,
+          "population_pct": 7.604809879753006
+        },
+        {
+          "bug_class": "buffer-overflow",
+          "slice_n": 2,
+          "slice_pct": 3.0303030303030303,
+          "population_n": 50,
+          "population_pct": 0.8124796880077998
+        },
+        {
+          "bug_class": "auth-bypass",
+          "slice_n": 2,
+          "slice_pct": 3.0303030303030303,
+          "population_n": 456,
+          "population_pct": 7.409814754631134
+        },
+        {
+          "bug_class": "integer-underflow",
+          "slice_n": 1,
+          "slice_pct": 1.5151515151515151,
+          "population_n": 29,
+          "population_pct": 0.4712382190445239
+        },
+        {
+          "bug_class": "off-by-one",
+          "slice_n": 1,
+          "slice_pct": 1.5151515151515151,
+          "population_n": 4,
+          "population_pct": 0.06499837504062399
+        },
+        {
+          "bug_class": "symlink-following",
+          "slice_n": 1,
+          "slice_pct": 1.5151515151515151,
+          "population_n": 12,
+          "population_pct": 0.19499512512187195
+        },
+        {
+          "bug_class": "code-injection",
+          "slice_n": 1,
+          "slice_pct": 1.5151515151515151,
+          "population_n": 58,
+          "population_pct": 0.9424764380890478
+        },
+        {
+          "bug_class": "xss",
+          "slice_n": 1,
+          "slice_pct": 1.5151515151515151,
+          "population_n": 97,
+          "population_pct": 1.5762105947351317
+        },
+        {
+          "bug_class": "broken-access-control",
+          "slice_n": 1,
+          "slice_pct": 1.5151515151515151,
+          "population_n": 266,
+          "population_pct": 4.322391940201495
+        },
+        {
+          "bug_class": "signature-bypass",
+          "slice_n": 1,
+          "slice_pct": 1.5151515151515151,
+          "population_n": 9,
+          "population_pct": 0.14624634384140398
+        },
+        {
+          "bug_class": "improper-cert-validation",
+          "slice_n": 1,
+          "slice_pct": 1.5151515151515151,
+          "population_n": 28,
+          "population_pct": 0.4549886252843679
+        },
+        {
+          "bug_class": "idor",
+          "slice_n": 1,
+          "slice_pct": 1.5151515151515151,
+          "population_n": 24,
+          "population_pct": 0.3899902502437439
+        },
+        {
+          "bug_class": "oob-write",
+          "slice_n": 1,
+          "slice_pct": 1.5151515151515151,
+          "population_n": 62,
+          "population_pct": 1.0074748131296718
+        },
+        {
+          "bug_class": "privilege-escalation",
+          "slice_n": 1,
+          "slice_pct": 1.5151515151515151,
+          "population_n": 109,
+          "population_pct": 1.7712057198570035
+        },
+        {
+          "bug_class": "rce",
+          "slice_n": 1,
+          "slice_pct": 1.5151515151515151,
+          "population_n": 16,
+          "population_pct": 0.25999350016249595
+        }
+      ]
+    }
   },
   "consistency": {
     "checks": [
@@ -826,10 +1050,10 @@
     },
     "status_counts": {
       "null": 195,
-      "merged": 2,
       "withdrawn": 246,
       "fixed": 218,
-      "disclosed": 5936
+      "disclosed": 5936,
+      "merged": 2
     },
     "patch_acceptance": {
       "cited": 0,

@@ -144,6 +144,20 @@ footer{margin-top:54px;padding-top:22px;border-top:1px solid var(--rule);font-si
   disclosures its models found. Its headline reproduces exactly. Three figures it does not
   publish change what the headline means.</p>
   <div class="snap" id="snap"></div>
+  <div class="disclaim" style="border-left-color:var(--warn)"><b>Corrected 2026-10-09.</b>
+  Two errors in the first version of this page are fixed here, both found by re-deriving the
+  figures rather than by anyone complaining.
+  <b>(1)</b> The per-bug-class table double-counted: one finding can carry a CVE and several
+  GHSAs, so 157 advisory slots held only 66 distinct findings. Every class mean was inflated.
+  Deduplicated, most classes rest on one to three findings and are no longer reported; three
+  coarse buckets are reported instead.
+  <b>(2)</b> Intervals assumed the findings were independent. They are not — they arrive in
+  batches sharing a discovery date — so every interval was too narrow. All intervals are now
+  resampled over clusters.
+  <b>(3)</b> The per-bucket breakdown was then tested by removing each bucket's two largest
+  projects. The one bucket that carried a story did not survive it, so the page now reports a
+  direction and no breakdown. The pooled finding survived every correction; the intervals
+  widened.</div>
   <p class="disclaim"><b>What this is.</b> An independent analysis of a public dataset at
   <span class="snap-v">red.anthropic.com/2026/cvd/</span>. Not an Anthropic publication, not
   reviewed by Anthropic, and not a vulnerability report. Every figure below is recomputed from
@@ -173,16 +187,37 @@ footer{margin-top:54px;padding-top:22px;border-top:1px solid var(--rule);font-si
 
 <section>
   <span class="secnum">02 / THE HEADLINE, RECONSIDERED</span>
-  <h2>83% agreement rests on a 52% baseline</h2>
+  <h2>What the 83% is made of</h2>
   <p class="lede">Anthropic reports that Claude and the external triage firms assigned exactly the
-  same severity band 83.0% of the time. That is true. It is also measured on a scale where both
-  parties answer <i>high</i> most of the time, so a large share of that agreement is what the
-  marginal distributions produce on their own.</p>
-  <p class="prose">Cohen's kappa subtracts that baseline. On the 1,337 findings both parties rated,
-  chance agreement alone is 51.6%, and kappa comes to 0.649 — substantial, and a genuinely good
-  result for an automated rater, but not the near-perfect agreement the raw percentage suggests.
-  The figure below carries the 95% bootstrap interval for every pair, because at these sample
-  sizes a point estimate on its own says little.</p>
+  same severity band 83.0% of the time. That reproduces. Two things about it are worth knowing
+  before it is quoted as a property of the scanner.</p>
+  <p class="prose"><b>First, the baseline.</b> Both parties answer <i>high</i> most of the time, so
+  a large share of the agreement is what the marginal distributions produce on their own. Chance
+  agreement alone is 51.6%. Cohen's kappa subtracts it and comes to 0.649 — substantial, and a
+  genuinely good result for an automated rater, but not the near-perfect agreement the raw
+  percentage suggests.</p>
+  <p class="prose"><b>Second, the findings are not independent.</b> They carry a discovery date,
+  there are only 50 distinct dates behind the 1,337 findings, and one of them supplies almost half
+  the set. On 2026-04-02 alone there are 591 findings agreeing at 93.9%. Across every other date,
+  746 findings agree at 74.4%. The published 83.0% is the average of those two populations,
+  weighted by a batch.</p>
+  <figure>
+    <figcaption><div class="fig-t">Where the evidence actually comes from</div>
+      <div class="fig-s">Each block is one discovery date, sized by how much of the 1,337-finding
+      comparison it supplies and labelled with its own agreement rate. A single date carries 44.2%
+      of the evidence.</div></figcaption>
+    <div class="plot"><svg id="batch-plot" role="img"
+      aria-label="Share of the paired set by discovery date. 2026-04-02 supplies 44.2 percent at 93.9 percent agreement; 2026-03-24 supplies 11.8 percent at 57.6 percent; 2026-03-29 supplies 8.6 percent at 97.4 percent; the remaining dates supply the rest."></svg></div>
+    <div class="legend"><span>Shading is the agreement rate within each block, light to dark.</span></div>
+    <details class="tableview"><summary>Show as table</summary>
+      <div class="scroll"><table id="batch-table">
+        <thead><tr><th>Population</th><th class="num">n</th><th class="num">Share of evidence</th>
+        <th class="num">Exact agreement</th></tr></thead><tbody></tbody></table></div></details>
+  </figure>
+  <p class="prose" style="margin-top:26px">Treating discovery dates as the sampled unit rather than
+  the findings, the pooled agreement rate carries a 95% interval of
+  <span class="snap-v" id="conc-ci"></span> — a span of more than twenty points. The single figure
+  is not wrong, but it is a much softer number than one decimal place implies.</p>
   <figure>
     <figcaption><div class="fig-t">Chance-corrected agreement, by pair of raters</div>
       <div class="fig-s">Cohen's kappa with a 95% percentile bootstrap interval (5,000 resamples,
@@ -210,10 +245,13 @@ footer{margin-top:54px;padding-top:22px;border-top:1px solid var(--rule);font-si
   anyone acts. Comparing against it is where the interesting result is.</p>
   <p class="prose">On the 118 findings rated by all three parties — the model, the triage firm and
   the maintainer — neither finder predicts the maintainer's band better than chance. Both kappa
-  intervals include zero. Holding the maintainer fixed and changing only the finder, the
-  difference between them is 0.004, with an interval from &minus;0.069 to +0.075: not
-  distinguishable. The model is neither better nor worse than the paid human experts at guessing
-  what the maintainer will say.</p>
+  intervals include zero. Holding the maintainer fixed and changing only the finder, the difference
+  between them is 0.004 and its interval spans zero: not distinguishable. The model is neither
+  better nor worse than the paid human experts at guessing what the maintainer will say.</p>
+  <p class="prose">These 118 findings come from 22 discovery dates and the largest supplies 44 of
+  them, so the intervals below resample dates rather than findings. That is the stricter test, and
+  it is the one the conclusions should be read against. Every conclusion survived it; the intervals
+  widened, which is what should happen.</p>
   <div class="keys" id="paired-keys"></div>
   <div class="finding">
     <p><b>The axis of disagreement is not human against model.</b> The two finders agree closely
@@ -271,19 +309,65 @@ footer{margin-top:54px;padding-top:22px;border-top:1px solid var(--rule);font-si
 </section>
 
 <section>
-  <span class="secnum">05 / BY BUG CLASS</span>
-  <h2>The gap is not uniform</h2>
-  <p class="lede">Joining severity triples to bug classes is possible only through the revealed
-  CVE and GHSA records — 157 findings. These figures are indicative, not conclusive, and the
-  per-class samples are small. They point one way: memory-safety findings carry the widest gap to
-  the maintainer, while several classes with a settled scoring convention carry none at all.</p>
+  <span class="secnum">05 / BY KIND OF BUG</span>
+  <h2>One number survives; the breakdown does not</h2>
+  <p class="lede">The figure to quote is <b id="ls-headline">&nbsp;</b> bands, measured on every
+  finding that carries both a Claude and a maintainer band. Nothing needs deduplicating for it:
+  the ledger already holds one row per finding. Everything below is an attempt to break that figure
+  into parts, and the attempt mostly fails.</p>
+  <p class="prose">A bug class can only be read through the revealed CVE and GHSA records, which is
+  a smaller and different population. Two things go wrong there, and both were found by testing the
+  breakdown rather than by publishing it.</p>
+  <p class="prose"><b>The slice is the hot one.</b> Findings that reached a published advisory run
+  <span class="snap-v" id="sel-gap"></span> bands hotter than those that did not
+  (<span class="snap-v" id="sel-detail"></span>). So any per-class figure is conditional on a
+  maintainer having written an advisory, and sits above the real average by construction.</p>
+  <p class="prose"><b>The one bucket with a story does not survive its own projects.</b> Spatial
+  memory corruption — buffer overflows and out-of-bounds writes — looked like the place the gap
+  lived. Half of that bucket comes from two projects. Remove them and it falls to roughly the same
+  value as everything else, which is to say there is no bucket effect left to report.</p>
   <figure>
-    <figcaption><div class="fig-t">Mean severity gap in bands, by bug class</div>
-      <div class="fig-s">Positive means the model placed the finding above the other rater.
-      Classes with fewer than six joined comparisons are omitted.</div></figcaption>
-    <div class="scroll" style="padding:0 17px 6px"><table id="calib-table">
-      <thead><tr><th>Bug class</th><th class="num">n vs firm</th><th class="num">Mean gap</th>
-      <th class="num">n vs maintainer</th><th class="num">Mean gap</th></tr></thead><tbody></tbody></table></div>
+    <figcaption><div class="fig-t">What each bucket becomes without its two largest projects</div>
+      <div class="fig-s">A bucket mean carried by two projects is a fact about those two projects.
+      This is the test the first version of this page did not run.</div></figcaption>
+    <div class="scroll" style="padding:0 17px 6px"><table id="robust-table">
+      <thead><tr><th>Bucket</th><th class="num">n</th><th class="num">Mean gap</th>
+      <th>Its two largest projects</th><th class="num">Share</th>
+      <th class="num">Without them</th></tr></thead><tbody></tbody></table></div>
+  </figure>
+  <div class="finding" style="border-left-color:var(--warn);background:var(--surface)">
+    <p><b>So the honest output is a direction, not a table.</b> Finder-side severity runs roughly
+    half a band above the maintainer's own, across the board. There is no defensible per-class or
+    per-bucket correction in this dataset, and a severity rubric that claimed one would be dressing
+    up two projects' scoring habits as a measurement.</p>
+  </div>
+  <figure>
+    <figcaption><div class="fig-t">The bucket figures, for completeness</div>
+      <div class="fig-s">Shown because they were in the first version of this page, with the
+      interval that tells you not to use them. Intervals resample projects.</div></figcaption>
+    <div class="plot"><svg id="bucket-plot" role="img"
+      aria-label="Mean severity gap by bucket, with intervals that overlap each other."></svg></div>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--accent)"></i>mean gap, in severity bands</span>
+      <span><i class="swatch line" style="background:var(--accent);opacity:.42"></i>95% interval, clustered by project</span>
+    </div>
+    <details class="tableview"><summary>Show as table</summary>
+      <div class="scroll"><table id="bucket-table">
+        <thead><tr><th>Bucket</th><th class="num">n</th><th class="num">Projects</th>
+        <th class="num">Mean gap</th><th class="num">95% interval</th><th>Verdict</th></tr></thead>
+        <tbody></tbody></table></div></details>
+  </figure>
+  <p class="prose" style="margin-top:26px">The slice is also nothing like the corpus. It is 66
+  findings, 1.07% of the 6,154 disclosed, and heap buffer overflows are 27.3% of it against 5.4% of
+  the population, while the catch-all class is 6.1% against 39.6%. Whatever these buckets describe,
+  it is not what the scanner sends.</p>
+  <figure>
+    <figcaption><div class="fig-t">How unlike the corpus this slice is</div>
+      <div class="fig-s">The measured slice exists only where a maintainer published an advisory,
+      which selects heavily for memory-safety findings in C and C++ projects.</div></figcaption>
+    <div class="scroll" style="padding:0 17px 6px"><table id="rep-table">
+      <thead><tr><th>Bug class</th><th class="num">Share of measured slice</th>
+      <th class="num">Share of all disclosed</th></tr></thead><tbody></tbody></table></div>
   </figure>
 </section>
 
@@ -370,7 +454,7 @@ footer{margin-top:54px;padding-top:22px;border-top:1px solid var(--rule);font-si
 </footer>
 </div>
 <div id="tip" role="status" aria-live="polite"></div>
-<script id="audit-data" type="application/json">{"snapshot":{"revision":35,"as_of":"2026-10-02T19:47:20.314425Z","analysis_until":"2026-10-02T23:59:59Z","manifest_sha3":"1fca6b3bafbdab0c2a55896e88c547016e90b28c554dc0b051895fc5639b0e5160b07598ccb6d2dcbfb9277b09a99ea81b4a4ba49cf36796a76fa7b6d97888f9"},"hashes":{"entries":6597,"present":6597,"distinct":6597,"bits":[512]},"sound":[["severity exact agreement (%)",83.0,83.0,true],["severity within one band (%)",97.1,97.1,true],["severity comparison n",1337,1337,true],["true positive rate (%)",92.7,92.7,true],["disclosed findings",6157,6157,true],["projects",591,591,true],["CVEs",219,219,true],["GHSAs",365,365,true],["acknowledged",5103,5103,true],["candidates analysed",29439,29439,true]],"all_reproduced":true,"agreement":[{"title":"Claude vs triage firm","why":"the comparison Anthropic published","n":1337,"exact":83.0,"within1":97.1,"chance":51.6,"kappa":0.649,"lo":0.608,"hi":0.689,"qwk":0.584,"gap":0.13,"hotter":13.5,"cooler":3.5,"confusion":[[18,3,0,3],[2,148,25,2],[12,23,828,14],[15,7,121,116]],"rows":[24,177,877,259],"cols":[47,181,974,135]},{"title":"Claude vs maintainer","why":"the people who decide whether to act","n":163,"exact":46.0,"within1":88.3,"chance":39.2,"kappa":0.112,"lo":0.03,"hi":0.2,"qwk":0.184,"gap":0.515,"hotter":46.6,"cooler":7.4,"confusion":[[2,2,0,0],[2,6,1,0],[9,45,64,9],[1,9,10,3]],"rows":[4,9,127,23],"cols":[14,62,75,12]},{"title":"Triage firm vs maintainer","why":"the control: human finders, same maintainers","n":118,"exact":41.5,"within1":90.7,"chance":39.7,"kappa":0.03,"lo":-0.06,"hi":0.129,"qwk":0.142,"gap":0.542,"hotter":51.7,"cooler":6.8,"confusion":[[1,0,0,0],[1,6,2,0],[8,42,42,6],[0,3,7,0]],"rows":[1,9,98,10],"cols":[10,51,51,6]},{"title":"Claude vs resolved","why":"the ledger's own settled band","n":1382,"exact":78.4,"within1":95.8,"chance":49.6,"kappa":0.572,"lo":0.53,"hi":0.612,"qwk":0.516,"gap":0.179,"hotter":17.5,"cooler":4.1,"confusion":[[19,5,0,3],[4,148,25,2],[21,65,806,21],[16,16,120,111]],"rows":[27,179,913,263],"cols":[60,234,951,137]}],"paired":{"n":118,"claude":{"label":"Claude vs maintainer","kappa":0.035,"kappa_lo95":-0.049,"kappa_hi95":0.124,"exact_pct":38.983,"chance_pct":36.785,"mean_gap":0.636,"hotter_pct":55.085,"cooler_pct":5.932},"vendor":{"label":"Triage firm vs maintainer","kappa":0.03,"kappa_lo95":-0.06,"kappa_hi95":0.129,"exact_pct":41.525,"chance_pct":39.694,"mean_gap":0.542,"hotter_pct":51.695,"cooler_pct":6.78},"kappa_difference":{"observed":0.004,"lo95":-0.069,"hi95":0.075,"p_positive":0.549,"verdict":"not distinguishable from zero"},"gap_difference":{"observed":0.093,"lo95":0.025,"hi95":0.161,"p_positive":0.997,"verdict":"distinguishable from zero"},"finders":{"kappa":0.578,"exact_pct":85.593}},"consistency":[{"aggregate":"total_fixed","aggregate_value":218,"compared_with":"ledger is_fixed","ledger_value":218,"delta":0,"verdict":"matches"},{"aggregate":"total_disclosed","aggregate_value":6157,"compared_with":"ledger was_disclosed","ledger_value":6154,"delta":3,"verdict":"open"},{"aggregate":"withdrawn flag","aggregate_value":243,"compared_with":"status == 'withdrawn'","ledger_value":246,"delta":-3,"verdict":"open"},{"aggregate":"total_revealed","aggregate_value":235,"compared_with":"reveal_tier == 'revealed'","ledger_value":237,"delta":-2,"verdict":"open"},{"aggregate":"total_verified","aggregate_value":5674,"compared_with":"ledger vendor_confirmed","ledger_value":232,"delta":5442,"verdict":"sealed"},{"aggregate":"total_cves","aggregate_value":219,"compared_with":"sum of ledger cve_ids","ledger_value":103,"delta":116,"verdict":"sealed"},{"aggregate":"total_ghsas","aggregate_value":365,"compared_with":"sum of ledger ghsa_ids","ledger_value":90,"delta":275,"verdict":"sealed"},{"aggregate":"total_fixed_in_response","aggregate_value":516,"compared_with":"ledger is_fixed_in_response","ledger_value":218,"delta":298,"verdict":"sealed"},{"aggregate":"project_count","aggregate_value":591,"compared_with":"by_project entries","ledger_value":113,"delta":478,"verdict":"sealed"},{"aggregate":"headline.analyzed","aggregate_value":29439,"compared_with":"ledger entries","ledger_value":6597,"delta":22842,"verdict":"funnel"}],"open_count":3,"detail":{"entries":6597,"with_detail":237,"share":3.6},"tiers":{"acknowledged_by_maintainer":4868,"discovered":438,"revealed":237,"sent":1054},"status_counts":{"null":195,"merged":2,"disclosed":5936,"withdrawn":246,"fixed":218},"patch":{"cited":0,"informed":0,"near_verbatim":0,"total_with_proposed_patch":2},"calibration":[{"bug_class":"heap-buffer-overflow","projects":["bytecodealliance/wasm-micro-runtime","dnsmasq","freerdp/freerdp","imagemagick/imagemagick","jqlang/jq","libass/libass","libexpat/libexpat","libgit2/libgit2","libreoffice/core","mapserver","nginx/nginx","nss","openexr","rabbitmq-c","wireshark/wireshark","wolfssl/wolfssl"],"n_vs_vendor":49,"mean_vs_vendor":0.08163265306122448,"n_vs_maintainer":28,"mean_vs_maintainer":0.8214285714285714},{"bug_class":"use-after-free","projects":["cesnet/libyang","freebsd/freebsd-src","libreoffice/core","oisf/suricata","openssl/openssl","torvalds/linux","util-linux/util-linux"],"n_vs_vendor":12,"mean_vs_vendor":0.5,"n_vs_maintainer":9,"mean_vs_maintainer":0.2222222222222222},{"bug_class":"stack-buffer-overflow","projects":["asterisk/asterisk","cesnet/libyang","freebsd/freebsd-src","gpg/libgcrypt","libreoffice/core","opensc","wireshark/wireshark"],"n_vs_vendor":8,"mean_vs_vendor":0.125,"n_vs_maintainer":9,"mean_vs_maintainer":0.8888888888888888},{"bug_class":"integer-overflow","projects":["cisco-talos/clamav","open62541/open62541","wolfssl/wolfssl"],"n_vs_vendor":8,"mean_vs_vendor":0.0,"n_vs_maintainer":8,"mean_vs_maintainer":0.0},{"bug_class":"crypto-failure","projects":["wolfssl/wolfssl"],"n_vs_vendor":5,"mean_vs_vendor":0.0,"n_vs_maintainer":5,"mean_vs_maintainer":0.4},{"bug_class":"denial-of-service","projects":["dnsmasq","jetty/jetty.project","postgres/postgres"],"n_vs_vendor":5,"mean_vs_vendor":0.0,"n_vs_maintainer":4,"mean_vs_maintainer":0.5},{"bug_class":"sql-injection","projects":["dhis2/dhis2-core","openmeterio/openmeter","rocketchat/rocket.chat","tryghost/ghost"],"n_vs_vendor":4,"mean_vs_vendor":0.0,"n_vs_maintainer":5,"mean_vs_maintainer":0.4},{"bug_class":"path-traversal","projects":["joomla/joomla-cms","junrar"],"n_vs_vendor":4,"mean_vs_vendor":0.0,"n_vs_maintainer":5,"mean_vs_maintainer":0.6},{"bug_class":"auth-bypass","projects":["freerdp/freerdp","rocketchat/rocket.chat","twigphp/twig"],"n_vs_vendor":5,"mean_vs_vendor":0.0,"n_vs_maintainer":3,"mean_vs_maintainer":0.0},{"bug_class":"other","projects":["libreoffice/core","wireshark/wireshark","wolfssl/wolfssl"],"n_vs_vendor":3,"mean_vs_vendor":0.0,"n_vs_maintainer":4,"mean_vs_maintainer":1.25},{"bug_class":"buffer-overflow","projects":["wireshark/wireshark","wolfssl/wolfssl"],"n_vs_vendor":3,"mean_vs_vendor":0.0,"n_vs_maintainer":3,"mean_vs_maintainer":1.0},{"bug_class":"oob-write","projects":["freerdp/freerdp","libreoffice/core","libvips/libvips"],"n_vs_vendor":5,"mean_vs_vendor":0.0,"n_vs_maintainer":1,"mean_vs_maintainer":1.0}],"joined":157}</script>
+<script id="audit-data" type="application/json">{"snapshot":{"revision":35,"as_of":"2026-10-02T19:47:20.314425Z","analysis_until":"2026-10-02T23:59:59Z","manifest_sha3":"1fca6b3bafbdab0c2a55896e88c547016e90b28c554dc0b051895fc5639b0e5160b07598ccb6d2dcbfb9277b09a99ea81b4a4ba49cf36796a76fa7b6d97888f9"},"hashes":{"entries":6597,"present":6597,"distinct":6597,"bits":[512]},"sound":[["severity exact agreement (%)",83.0,83.0,true],["severity within one band (%)",97.1,97.1,true],["severity comparison n",1337,1337,true],["true positive rate (%)",92.7,92.7,true],["disclosed findings",6157,6157,true],["projects",591,591,true],["CVEs",219,219,true],["GHSAs",365,365,true],["acknowledged",5103,5103,true],["candidates analysed",29439,29439,true]],"all_reproduced":true,"agreement":[{"title":"Claude vs triage firm","why":"the comparison Anthropic published","n":1337,"exact":83.0,"within1":97.1,"chance":51.6,"kappa":0.649,"lo":0.608,"hi":0.689,"qwk":0.584,"gap":0.13,"hotter":13.5,"cooler":3.5,"confusion":[[18,3,0,3],[2,148,25,2],[12,23,828,14],[15,7,121,116]],"rows":[24,177,877,259],"cols":[47,181,974,135]},{"title":"Claude vs maintainer","why":"the people who decide whether to act","n":163,"exact":46.0,"within1":88.3,"chance":39.2,"kappa":0.112,"lo":0.03,"hi":0.2,"qwk":0.184,"gap":0.515,"hotter":46.6,"cooler":7.4,"confusion":[[2,2,0,0],[2,6,1,0],[9,45,64,9],[1,9,10,3]],"rows":[4,9,127,23],"cols":[14,62,75,12]},{"title":"Triage firm vs maintainer","why":"the control: human finders, same maintainers","n":118,"exact":41.5,"within1":90.7,"chance":39.7,"kappa":0.03,"lo":-0.06,"hi":0.129,"qwk":0.142,"gap":0.542,"hotter":51.7,"cooler":6.8,"confusion":[[1,0,0,0],[1,6,2,0],[8,42,42,6],[0,3,7,0]],"rows":[1,9,98,10],"cols":[10,51,51,6]},{"title":"Claude vs resolved","why":"the ledger's own settled band","n":1382,"exact":78.4,"within1":95.8,"chance":49.6,"kappa":0.572,"lo":0.53,"hi":0.612,"qwk":0.516,"gap":0.179,"hotter":17.5,"cooler":4.1,"confusion":[[19,5,0,3],[4,148,25,2],[21,65,806,21],[16,16,120,111]],"rows":[27,179,913,263],"cols":[60,234,951,137]}],"paired":{"n":118,"claude":{"label":"Claude vs maintainer","kappa":0.035,"kappa_lo95":-0.049,"kappa_hi95":0.124,"exact_pct":38.983,"chance_pct":36.785,"mean_gap":0.636,"hotter_pct":55.085,"cooler_pct":5.932},"vendor":{"label":"Triage firm vs maintainer","kappa":0.03,"kappa_lo95":-0.06,"kappa_hi95":0.129,"exact_pct":41.525,"chance_pct":39.694,"mean_gap":0.542,"hotter_pct":51.695,"cooler_pct":6.78},"kappa_difference":{"observed":0.004,"lo95":-0.069,"hi95":0.075,"p_positive":0.549,"verdict":"not distinguishable from zero"},"gap_difference":{"observed":0.093,"lo95":0.025,"hi95":0.161,"p_positive":0.997,"verdict":"distinguishable from zero"},"finders":{"kappa":0.578,"exact_pct":85.593},"clustered":{"n":118,"clusters":22,"largest_cluster":44,"kappa_difference":{"observed":0.004,"lo95":-0.092,"hi95":0.071,"excludes_zero":false},"gap_difference":{"observed":0.093,"lo95":0.016,"hi95":0.291,"excludes_zero":true},"claude_gap":{"observed":0.636,"lo95":0.43,"hi95":0.977,"excludes_zero":true},"vendor_gap":{"observed":0.542,"lo95":0.376,"hi95":0.734,"excludes_zero":true}}},"concentration":{"n":1337,"distinct_dates":50,"pooled_exact_pct":83.0,"dominant_date":"2026-04-02","dominant_n":591,"dominant_share_pct":44.2,"dominant_exact_pct":93.9,"without_dominant_n":746,"without_dominant_exact_pct":74.4,"clustered_lo95_pct":66.6,"clustered_hi95_pct":90.5,"top_dates":[{"date":"2026-04-02","n":591,"share_pct":44.2,"exact_pct":93.9},{"date":"2026-03-24","n":158,"share_pct":11.8,"exact_pct":57.6},{"date":"2026-03-29","n":115,"share_pct":8.6,"exact_pct":97.4},{"date":"2026-09-19","n":55,"share_pct":4.1,"exact_pct":78.2},{"date":"2026-04-09","n":40,"share_pct":3.0,"exact_pct":95.0},{"date":"2026-03-30","n":39,"share_pct":2.9,"exact_pct":79.5}],"by_month":[{"month":"2026-03","n":371,"exact_pct":72.5},{"month":"2026-04","n":770,"exact_pct":88.8},{"month":"2026-05","n":23,"exact_pct":60.9},{"month":"2026-06","n":34,"exact_pct":97.1},{"month":"2026-09","n":119,"exact_pct":83.2}]},"calibration":{"largest_sample":{"n":163,"mean_gap":0.515,"lo95":0.393,"hi95":0.644,"advisory_revealed_n":67,"advisory_revealed_gap":0.657,"rest_n":96,"rest_gap":0.417,"selection_gap":0.24},"bucket_robustness":[{"label":"spatial memory corruption","n":29,"mean_gap":0.897,"top_two":["libreoffice/core","wolfssl/wolfssl"],"top_two_share_pct":51.724,"without_top_two_n":14,"without_top_two_gap":0.571},{"label":"temporal and arithmetic","n":11,"mean_gap":0.091,"top_two":["cisco-talos/clamav","torvalds/linux"],"top_two_share_pct":45.455,"without_top_two_n":6,"without_top_two_gap":0.167},{"label":"everything else","n":26,"mean_gap":0.577,"top_two":["wolfssl/wolfssl","rocketchat/rocket.chat"],"top_two_share_pct":30.769,"without_top_two_n":18,"without_top_two_gap":0.778}],"deduplication":{"advisory_slots":157,"unique_findings":66,"repeats_removed":91,"note":"One finding can carry a CVE and several GHSAs. Counting advisory slots counts it once per identifier and inflates every class mean."},"pooled":{"label":"all classes, pooled","n":66,"projects":30,"mean_gap":0.636,"lo95":0.289,"hi95":0.886,"excludes_zero":true,"above_pct":53.03,"equal_pct":42.424,"below_pct":4.545},"buckets":[{"label":"spatial memory corruption","n":29,"projects":12,"mean_gap":0.897,"lo95":0.312,"hi95":1.1,"excludes_zero":true,"above_pct":75.862,"equal_pct":20.69,"below_pct":3.448},{"label":"temporal and arithmetic","n":11,"projects":8,"mean_gap":0.091,"lo95":-0.25,"hi95":0.6,"excludes_zero":false,"above_pct":9.091,"equal_pct":81.818,"below_pct":9.091},{"label":"everything else","n":26,"projects":17,"mean_gap":0.577,"lo95":0.243,"hi95":1.053,"excludes_zero":true,"above_pct":46.154,"equal_pct":50.0,"below_pct":3.846}],"per_class":[{"label":"heap-buffer-overflow","n":18,"projects":8,"mean_gap":0.889,"lo95":0.2,"hi95":1.154,"excludes_zero":true,"above_pct":72.222,"equal_pct":22.222,"below_pct":5.556},{"label":"stack-buffer-overflow","n":7,"projects":5,"mean_gap":0.857,"lo95":0.2,"hi95":1.222,"excludes_zero":true,"above_pct":71.429,"equal_pct":28.571,"below_pct":0.0},{"label":"use-after-free","n":6,"projects":5,"mean_gap":0.167,"lo95":-0.5,"hi95":1.0,"excludes_zero":false,"above_pct":16.667,"equal_pct":66.667,"below_pct":16.667}],"too_thin":[{"label":"integer-overflow","n":4},{"label":"other","n":4},{"label":"sql-injection","n":3},{"label":"path-traversal","n":3},{"label":"crypto-failure","n":3},{"label":"denial-of-service","n":2},{"label":"buffer-overflow","n":2},{"label":"auth-bypass","n":2},{"label":"integer-underflow","n":1},{"label":"off-by-one","n":1},{"label":"symlink-following","n":1},{"label":"code-injection","n":1},{"label":"xss","n":1},{"label":"broken-access-control","n":1},{"label":"signature-bypass","n":1},{"label":"improper-cert-validation","n":1},{"label":"idor","n":1},{"label":"oob-write","n":1},{"label":"privilege-escalation","n":1},{"label":"rce","n":1}],"min_per_class":5,"lopo":[{"dropped":"wolfssl/wolfssl","dropped_n":12,"remaining_n":54,"mean_gap":0.648},{"dropped":"libreoffice/core","dropped_n":12,"remaining_n":54,"mean_gap":0.537},{"dropped":"wireshark/wireshark","dropped_n":7,"remaining_n":59,"mean_gap":0.542},{"dropped":"cisco-talos/clamav","dropped_n":3,"remaining_n":63,"mean_gap":0.667},{"dropped":"dnsmasq","dropped_n":2,"remaining_n":64,"mean_gap":0.641}],"representativeness":{"slice_size":66,"population":6154,"share_pct":1.07,"classes":[{"bug_class":"heap-buffer-overflow","slice_n":18,"slice_pct":27.3,"population_n":334,"population_pct":5.4},{"bug_class":"stack-buffer-overflow","slice_n":7,"slice_pct":10.6,"population_n":111,"population_pct":1.8},{"bug_class":"use-after-free","slice_n":6,"slice_pct":9.1,"population_n":145,"population_pct":2.4},{"bug_class":"integer-overflow","slice_n":4,"slice_pct":6.1,"population_n":73,"population_pct":1.2},{"bug_class":"other","slice_n":4,"slice_pct":6.1,"population_n":2434,"population_pct":39.6},{"bug_class":"sql-injection","slice_n":3,"slice_pct":4.5,"population_n":44,"population_pct":0.7}]}},"consistency":[{"aggregate":"total_fixed","aggregate_value":218,"compared_with":"ledger is_fixed","ledger_value":218,"delta":0,"verdict":"matches"},{"aggregate":"total_disclosed","aggregate_value":6157,"compared_with":"ledger was_disclosed","ledger_value":6154,"delta":3,"verdict":"open"},{"aggregate":"withdrawn flag","aggregate_value":243,"compared_with":"status == 'withdrawn'","ledger_value":246,"delta":-3,"verdict":"open"},{"aggregate":"total_revealed","aggregate_value":235,"compared_with":"reveal_tier == 'revealed'","ledger_value":237,"delta":-2,"verdict":"open"},{"aggregate":"total_verified","aggregate_value":5674,"compared_with":"ledger vendor_confirmed","ledger_value":232,"delta":5442,"verdict":"sealed"},{"aggregate":"total_cves","aggregate_value":219,"compared_with":"sum of ledger cve_ids","ledger_value":103,"delta":116,"verdict":"sealed"},{"aggregate":"total_ghsas","aggregate_value":365,"compared_with":"sum of ledger ghsa_ids","ledger_value":90,"delta":275,"verdict":"sealed"},{"aggregate":"total_fixed_in_response","aggregate_value":516,"compared_with":"ledger is_fixed_in_response","ledger_value":218,"delta":298,"verdict":"sealed"},{"aggregate":"project_count","aggregate_value":591,"compared_with":"by_project entries","ledger_value":113,"delta":478,"verdict":"sealed"},{"aggregate":"headline.analyzed","aggregate_value":29439,"compared_with":"ledger entries","ledger_value":6597,"delta":22842,"verdict":"funnel"}],"open_count":3,"detail":{"entries":6597,"with_detail":237,"share":3.6},"tiers":{"acknowledged_by_maintainer":4868,"discovered":438,"revealed":237,"sent":1054},"patch":{"cited":0,"informed":0,"near_verbatim":0,"total_with_proposed_patch":2}}</script>
 <script>
 (function(){
 "use strict";
@@ -505,32 +589,98 @@ function chip(kind, label){
   });
 })();
 
-(function calibTable(){
-  var body = document.querySelector('#calib-table tbody');
-  D.calibration.forEach(function(c){
+/* ---- calibration: dedup line, bucket table, representativeness ---- */
+(function calibration(){
+  var cal = D.calibration, dd = cal.deduplication;
+  var ls = cal.largest_sample;
+  var put = function(id, text){ var e = document.getElementById(id); if (e) e.textContent = text; };
+  if (ls) {
+    put('ls-headline', '+' + ls.mean_gap.toFixed(2) + ' [' + ls.lo95.toFixed(2) + ' to ' + ls.hi95.toFixed(2) + '], n = ' + ls.n + ',');
+    put('sel-gap', '+' + ls.selection_gap.toFixed(2));
+    put('sel-detail', '+' + ls.advisory_revealed_gap.toFixed(2) + ' on n=' + ls.advisory_revealed_n +
+      ' against +' + ls.rest_gap.toFixed(2) + ' on n=' + ls.rest_n);
+  }
+
+  var rb = document.querySelector('#robust-table tbody');
+  (cal.bucket_robustness || []).forEach(function(b){
     var tr = document.createElement('tr');
-    cell(tr, c.bug_class, 'mono');
-    cell(tr, c.n_vs_vendor, 'num');
-    cell(tr, c.mean_vs_vendor === null ? '—' : (c.mean_vs_vendor >= 0 ? '+' : '') + fmt(c.mean_vs_vendor, 2), 'num');
-    cell(tr, c.n_vs_maintainer, 'num');
-    cell(tr, c.mean_vs_maintainer === null ? '—' : (c.mean_vs_maintainer >= 0 ? '+' : '') + fmt(c.mean_vs_maintainer, 2), 'num');
+    cell(tr, b.label);
+    cell(tr, b.n, 'num');
+    cell(tr, (b.mean_gap >= 0 ? '+' : '') + fmt(b.mean_gap, 2), 'num');
+    cell(tr, b.top_two.join(', '), 'mono');
+    cell(tr, pct(b.top_two_share_pct), 'num');
+    cell(tr, (b.without_top_two_gap >= 0 ? '+' : '') + fmt(b.without_top_two_gap, 2) +
+      '  (n=' + b.without_top_two_n + ')', 'num');
+    rb.appendChild(tr);
+  });
+
+  var body = document.querySelector('#bucket-table tbody');
+  cal.buckets.concat([cal.pooled]).forEach(function(b){
+    var tr = document.createElement('tr');
+    cell(tr, b.label);
+    cell(tr, b.n, 'num'); cell(tr, b.projects, 'num');
+    cell(tr, (b.mean_gap >= 0 ? '+' : '') + fmt(b.mean_gap, 2), 'num');
+    cell(tr, fmt(b.lo95, 2) + ' to ' + fmt(b.hi95, 2), 'num');
+    cell(tr, chip(b.excludes_zero ? 'ok' : 'open', b.excludes_zero ? 'gap measured' : 'no gap'));
+    body.appendChild(tr);
+  });
+
+  var rep = document.querySelector('#rep-table tbody');
+  cal.representativeness.classes.forEach(function(r){
+    var tr = document.createElement('tr');
+    cell(tr, r.bug_class, 'mono');
+    cell(tr, pct(r.slice_pct), 'num');
+    cell(tr, pct(r.population_pct), 'num');
+    rep.appendChild(tr);
+  });
+})();
+
+/* ---- concentration: the batch table and its clustered interval ---- */
+(function concentration(){
+  var c = D.concentration;
+  var ci = document.getElementById('conc-ci');
+  if (ci) ci.textContent = c.clustered_lo95_pct.toFixed(1) + '% to ' + c.clustered_hi95_pct.toFixed(1) + '%';
+  var body = document.querySelector('#batch-table tbody');
+  [ { label: 'the ' + c.dominant_date + ' batch', n: c.dominant_n, share: c.dominant_share_pct, exact: c.dominant_exact_pct },
+    { label: 'every other discovery date', n: c.without_dominant_n, share: 100 - c.dominant_share_pct, exact: c.without_dominant_exact_pct },
+    { label: 'pooled, as published', n: c.n, share: 100, exact: c.pooled_exact_pct }
+  ].forEach(function(r){
+    var tr = document.createElement('tr');
+    cell(tr, r.label); cell(tr, r.n.toLocaleString('en-US'), 'num');
+    cell(tr, pct(r.share), 'num'); cell(tr, pct(r.exact), 'num');
     body.appendChild(tr);
   });
 })();
 
 (function pairedKeys(){
-  var p = D.paired;
+  var p = D.paired, cl = p.clustered || {};
+  // Prefer the date-clustered interval. These findings arrive in batches sharing a discovery
+  // date, so the finding-level interval is narrower than the evidence supports.
+  var span = function(k, lo, hi){ var v = cl[k]; return v ? { lo: v.lo95, hi: v.hi95 } : { lo: lo, hi: hi }; };
+  var kapD = span('kappa_difference', p.kappa_difference.lo95, p.kappa_difference.hi95);
+  var gapD = span('gap_difference', p.gap_difference.lo95, p.gap_difference.hi95);
+  var cG = span('claude_gap', null, null), vG = span('vendor_gap', null, null);
+
   var items = [
     { val: fmt(p.claude.kappa), ci: fmt(p.claude.kappa_lo95) + ' to ' + fmt(p.claude.kappa_hi95),
       lab: 'kappa, Claude against the maintainer. The interval includes zero.' },
     { val: fmt(p.vendor.kappa), ci: fmt(p.vendor.kappa_lo95) + ' to ' + fmt(p.vendor.kappa_hi95),
       lab: 'kappa, triage firm against the same maintainers. Also includes zero.' },
-    { val: fmt(p.kappa_difference.observed), ci: fmt(p.kappa_difference.lo95) + ' to ' + fmt(p.kappa_difference.hi95),
-      lab: 'Difference between them, paired. Not distinguishable from zero.' },
-    { val: '+' + fmt(p.gap_difference.observed), ci: '+' + fmt(p.gap_difference.lo95) + ' to +' + fmt(p.gap_difference.hi95),
-      lab: 'Bands by which the model runs hotter than the firm. This one is real.', cls: 'hot' }
+    { val: fmt(p.kappa_difference.observed), ci: fmt(kapD.lo) + ' to ' + fmt(kapD.hi),
+      lab: 'Difference between them, paired and clustered. Not distinguishable from zero.' },
+    { val: '+' + fmt(p.gap_difference.observed), ci: fmt(gapD.lo) + ' to ' + fmt(gapD.hi),
+      lab: 'Bands by which the model runs hotter than the firm. Survives clustering.', cls: 'hot' }
   ];
+  if (cG.lo !== null && vG.lo !== null) {
+    items.splice(2, 0,
+      { val: '+' + fmt(p.claude.mean_gap, 2), ci: fmt(cG.lo) + ' to ' + fmt(cG.hi),
+        lab: 'Bands the model sits above the maintainer. Interval excludes zero.', cls: 'hot' },
+      { val: '+' + fmt(p.vendor.mean_gap, 2), ci: fmt(vG.lo) + ' to ' + fmt(vG.hi),
+        lab: 'Bands the human triage firm sits above the same maintainers. Also excludes zero.', cls: 'hot' });
+  }
+
   var wrap = document.getElementById('paired-keys');
+  wrap.textContent = '';
   items.forEach(function(it){
     var d = document.createElement('div'); d.className = 'key';
     var a = document.createElement('div'); a.className = 'key-v' + (it.cls ? ' ' + it.cls : ''); a.textContent = it.val;
@@ -674,6 +824,125 @@ function chip(kind, label){
           'text-anchor': outward > 0 ? 'start' : 'end', 'font-family': 'var(--font-mono)',
           'font-size': 11.5, 'font-weight': 500, fill: p.fill }, p.val));
       });
+  });
+})();
+
+/* ---- chart 5: where the evidence comes from, by discovery date ---- */
+(function batchPlot(){
+  var c = D.concentration, svg = document.getElementById('batch-plot');
+  if (!svg || !c.top_dates) return;
+  var W = 760, L = 16, R = 16, top = 30, H = 132;
+  var inner = W - L - R;
+
+  var shown = c.top_dates.slice(0, 5);
+  var accounted = shown.reduce(function(n, d){ return n + d.n; }, 0);
+  var blocks = shown.map(function(d){
+    return { label: d.date, n: d.n, share: d.share_pct, exact: d.exact_pct };
+  });
+  if (accounted < c.n) {
+    var restN = c.n - accounted;
+    // The tail's own rate, recovered from the pooled and the parts above it.
+    var restExact = (c.pooled_exact_pct * c.n - shown.reduce(function(a, d){ return a + d.exact_pct * d.n; }, 0)) / restN;
+    blocks.push({ label: 'other dates', n: restN, share: 100 * restN / c.n, exact: restExact, tail: true });
+  }
+
+  // Shade each block by its own agreement rate, so size and rate read at once.
+  var step = function(rate){
+    var t = Math.max(0, Math.min(1, (rate - 55) / 45));
+    return 'var(' + SEQ[Math.min(SEQ.length - 1, Math.floor(t * SEQ.length))] + ')';
+  };
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  var x = L;
+  blocks.forEach(function(b){
+    var w = Math.max(2, b.share / 100 * inner - 2);
+    var dark = b.exact >= 85;
+    var r = el('rect', { x: x, y: top, width: w, height: 46, rx: 2, fill: step(b.exact) });
+    svg.appendChild(r);
+    bindTip(r, b.label + '\n' + b.n + ' findings, ' + b.share.toFixed(1) + '% of the comparison' +
+      '\nexact agreement ' + b.exact.toFixed(1) + '%');
+    if (w > 54) {
+      svg.appendChild(el('text', { x: x + w / 2, y: top + 21, 'text-anchor': 'middle',
+        'font-family': 'var(--font-mono)', 'font-size': 12, 'font-weight': 600,
+        fill: 'var(' + (dark ? '--surface' : '--ink') + ')' }, b.exact.toFixed(1) + '%'));
+      svg.appendChild(el('text', { x: x + w / 2, y: top + 37, 'text-anchor': 'middle',
+        'font-family': 'var(--font-mono)', 'font-size': 10,
+        fill: 'var(' + (dark ? '--surface' : '--ink-2') + ')' }, 'n=' + b.n));
+    }
+    if (w > 72 || b.share > 10) {
+      svg.appendChild(el('text', { x: x + w / 2, y: top - 10, 'text-anchor': 'middle',
+        'font-family': 'var(--font-mono)', 'font-size': 10.5, fill: 'var(--ink-muted)' }, b.label));
+      svg.appendChild(el('text', { x: x + w / 2, y: top + 64, 'text-anchor': 'middle',
+        'font-family': 'var(--font-mono)', 'font-size': 10.5, fill: 'var(--ink-muted)' },
+        b.share.toFixed(1) + '%'));
+    }
+    x += w + 2;
+  });
+  svg.appendChild(el('text', { x: L, y: H - 8, 'font-family': 'var(--font-body)',
+    'font-size': 11.5, fill: 'var(--ink-muted)' },
+    'width = share of the 1,337-finding comparison   \u00b7   shade and figure = that block\u2019s own agreement rate'));
+})();
+
+/* ---- chart 6: severity gap by bucket, intervals clustered over projects ---- */
+(function bucketPlot(){
+  var cal = D.calibration, svg = document.getElementById('bucket-plot');
+  if (!svg || !cal.buckets) return;
+  var rows = cal.buckets.concat([Object.assign({}, cal.pooled, { pooled: true })]);
+  var W = 760, L = 246, R = 58, top = 26, step = 48;
+  var H = top + rows.length * step + 54;
+
+  var lo = Math.min.apply(null, rows.map(function(r){ return r.lo95; }).concat([-0.35]));
+  var hi = Math.max.apply(null, rows.map(function(r){ return r.hi95; }).concat([1.2]));
+  var pad = (hi - lo) * 0.06;
+  lo -= pad; hi += pad;
+  var x = function(v){ return L + (v - lo) / (hi - lo) * (W - L - R); };
+
+  [-0.25, 0, 0.5, 1.0].forEach(function(t){
+    if (t < lo || t > hi) return;
+    var zero = t === 0;
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.appendChild(el('line', { x1: x(t), x2: x(t), y1: top - 10, y2: top + rows.length * step - 18,
+      stroke: 'var(' + (zero ? '--ink-muted' : '--rule') + ')', 'stroke-width': zero ? 1.5 : 1,
+      'stroke-dasharray': zero ? '' : '2 3' }));
+    svg.appendChild(el('text', { x: x(t), y: top + rows.length * step + 16, 'text-anchor': 'middle',
+      'font-family': 'var(--font-mono)', 'font-size': 11, fill: 'var(--ink-muted)' },
+      (t < 0 ? '\u2212' : '+') + Math.abs(t).toFixed(2)));
+  });
+  svg.appendChild(el('text', { x: x(0), y: top + rows.length * step + 38, 'text-anchor': 'middle',
+    'font-family': 'var(--font-body)', 'font-size': 11.5, fill: 'var(--ink-muted)' },
+    'no gap between finder and maintainer'));
+
+  rows.forEach(function(b, i){
+    var y = top + i * step + 8;
+    svg.appendChild(el('text', { x: L - 14, y: y + 4, 'text-anchor': 'end',
+      'font-family': 'var(--font-body)', 'font-size': 13,
+      'font-weight': b.pooled ? 600 : 500, fill: 'var(--ink)' },
+      b.pooled ? 'all classes, pooled' : b.label));
+    svg.appendChild(el('text', { x: L - 14, y: y + 19, 'text-anchor': 'end',
+      'font-family': 'var(--font-mono)', 'font-size': 10.5, fill: 'var(--ink-muted)' },
+      'n = ' + b.n + '  \u00b7  ' + b.projects + ' projects'));
+
+    svg.appendChild(el('line', { x1: x(b.lo95), x2: x(b.hi95), y1: y, y2: y,
+      stroke: 'var(--accent)', 'stroke-width': 3, 'stroke-linecap': 'round', opacity: 0.42 }));
+    [b.lo95, b.hi95].forEach(function(e){
+      svg.appendChild(el('line', { x1: x(e), x2: x(e), y1: y - 5, y2: y + 5,
+        stroke: 'var(--accent)', 'stroke-width': 1.5, opacity: 0.55 }));
+    });
+    var dot = el('circle', { cx: x(b.mean_gap), cy: y, r: b.pooled ? 7 : 6,
+      fill: 'var(--accent)', stroke: 'var(--surface)', 'stroke-width': 2 });
+    svg.appendChild(dot);
+    bindTip(dot, b.label + '\n' + (b.mean_gap >= 0 ? '+' : '') + b.mean_gap.toFixed(2) +
+      ' bands  95% ' + b.lo95.toFixed(2) + ' to ' + b.hi95.toFixed(2) +
+      '\nn = ' + b.n + ' findings across ' + b.projects + ' projects' +
+      (b.excludes_zero ? '\ninterval excludes zero' : '\ninterval crosses zero \u2014 no measurable gap'));
+    svg.appendChild(el('text', { x: x(b.hi95) + 11, y: y + 4, 'font-family': 'var(--font-mono)',
+      'font-size': 12, 'font-weight': 500,
+      fill: 'var(' + (b.excludes_zero ? '--ink' : '--ink-muted') + ')' },
+      (b.mean_gap >= 0 ? '+' : '\u2212') + Math.abs(b.mean_gap).toFixed(2)));
+    if (!b.excludes_zero) {
+      svg.appendChild(el('text', { x: L - 14, y: y + 32, 'text-anchor': 'end',
+        'font-family': 'var(--font-body)', 'font-size': 10.5, 'font-style': 'italic',
+        fill: 'var(--ink-muted)' }, 'no measurable gap'));
+    }
   });
 })();
 
