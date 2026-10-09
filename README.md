@@ -28,6 +28,37 @@ A practical corollary for anyone enrolled in OSS Scanner: expect the band on an 
 report to read roughly half a band to two thirds of a band above what you would assign
 yourself. That is a calibration note, not a complaint.
 
+## A second finding: the threat-model template's severity floor
+
+OSS Scanner's README asks a maintainer whether they cap memory-safety findings
+("are buffer overflows without demonstrated exploits capped at high?"). Its
+`templates/threat_model.md` tells them the opposite — "any buffer overflow,
+use-after-free, or double free is high+ at a minimum" — and the template is the
+file maintainers copy. Between the two documents a maintainer is shown how to
+move such a finding up, and never how to move one down.
+
+In the ledger, 33 findings in those classes carry both a Claude severity and a
+maintainer severity, across 14 projects. Maintainers put **24 of 33 below that
+floor** (20 medium, 4 low); Claude put 5 of 33 below it. libreoffice/core rated
+all ten of its findings medium, and wireshark and wolfssl likewise sit below;
+the kernel, FreeBSD, nginx, nss, dnsmasq and ImageMagick sit at or above, and
+OpenSSL rated one critical. Conventions genuinely differ, so one worked example
+cannot be neutral between them.
+
+```
+python3 -I src/template_check.py data/payload-r35.json
+```
+
+Limits travel with it: n=33 is small and concentrated (dropping the two largest
+contributors leaves 50% below the floor rather than 73%); the slice exists only
+where a maintainer published an advisory and runs about 0.24 bands hotter than
+findings without one; a CVSS-versus-rubric difference cannot be separated from a
+disagreement here; and an advisory severity is not the same artefact as a threat
+model severity, so treating one as evidence about the other is an assumption.
+
+`NOTE-TO-ANTHROPIC.md` is the write-up of this, prepared for
+`oss-scanner-questions@anthropic.com`.
+
 ## Run it
 
 Python 3, standard library only, no dependencies. Offline after the fetch.
@@ -54,7 +85,11 @@ code that reads it.
 | `src/stats.py` | Cohen's kappa, quadratic-weighted kappa, percentile bootstrap. Fixed seed |
 | `src/paired.py` | The three-way comparison on findings all three parties rated |
 | `src/audit.py` | Reproduce, extend, and reconcile every aggregate against the per-entry rows |
+| `src/calibration.py` | Severity gap, deduplicated and clustered over projects |
+| `src/concentration.py` | Whether the published agreement figure is carried by one batch |
+| `src/template_check.py` | The threat-model template's floor against maintainer practice |
 | `out/report.html` | The written report, with the charts |
+| `NOTE-TO-ANTHROPIC.md` | The note reporting the template finding |
 
 ## On the ledger's verifiability
 
