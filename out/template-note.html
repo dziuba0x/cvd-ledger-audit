@@ -1,0 +1,271 @@
+<title>Template Floor Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a single technical note — prose at ~66ch, one figure, one table. Same tokens as the
+   full audit so the two read as one body of work. */
+:root{
+  --plane:#f4f6f9; --surface:#fdfdfe; --sunk:#eceff4;
+  --ink:#10131a; --ink-2:#4a5160; --ink-muted:#7b8292;
+  --rule:#dde1e9; --rule-soft:#e9ecf2;
+  --accent:#2a78d6; --accent-wash:#e8f0fc; --warn:#fab219; --ok:#0ca30c;
+  --b1:#cde2fb; --b2:#86b6ef; --b3:#2a78d6; --b4:#104281;
+  --font-display:"IBM Plex Sans Condensed",-apple-system,"Segoe UI",sans-serif;
+  --font-body:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --plane:#0d0f13; --surface:#171a1f; --sunk:#11141a;
+  --ink:#f2f4f8; --ink-2:#b4bbc9; --ink-muted:#858c9b;
+  --rule:#272c35; --rule-soft:#1f242c;
+  --accent:#3987e5; --accent-wash:#16243a; --warn:#fab219; --ok:#0ca30c;
+  --b1:#17314f; --b2:#1c5cab; --b3:#3987e5; --b4:#9ec5f4;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --plane:#0d0f13; --surface:#171a1f; --sunk:#11141a;
+  --ink:#f2f4f8; --ink-2:#b4bbc9; --ink-muted:#858c9b;
+  --rule:#272c35; --rule-soft:#1f242c;
+  --accent:#3987e5; --accent-wash:#16243a; --warn:#fab219; --ok:#0ca30c;
+  --b1:#17314f; --b2:#1c5cab; --b3:#3987e5; --b4:#9ec5f4;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);font-family:var(--font-body);
+  font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
+.prose{max-width:66ch}
+h1,h2{font-family:var(--font-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(27px,5.4vw,41px);font-weight:700;letter-spacing:-.017em;line-height:1.08}
+h2{font-size:clamp(18px,3vw,23px);font-weight:700;letter-spacing:-.008em;margin-top:40px}
+p{margin:0 0 1.05em}
+.eyebrow{font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-muted);margin:0 0 13px}
+.standfirst{font-size:clamp(16px,2.3vw,18px);line-height:1.54;color:var(--ink-2);max-width:60ch;margin:16px 0 0}
+header{border-bottom:1px solid var(--rule);padding-block:48px 28px;margin-bottom:30px}
+.quote{margin:22px 0;padding:16px 18px;background:var(--surface);border:1px solid var(--rule);
+  border-left:3px solid var(--warn);border-radius:3px;font-family:var(--font-mono);font-size:13.5px;
+  line-height:1.6;color:var(--ink)}
+.quote span{display:block;font-family:var(--font-body);font-size:12px;color:var(--ink-muted);
+  margin-top:9px;letter-spacing:.01em}
+figure{margin:26px 0 0;border:1px solid var(--rule);border-radius:4px;background:var(--surface);overflow:hidden}
+figcaption{padding:13px 16px;border-bottom:1px solid var(--rule-soft);background:var(--sunk)}
+.fig-t{font-family:var(--font-display);font-size:14.5px;font-weight:600}
+.fig-s{font-size:12.5px;color:var(--ink-2);margin-top:3px;max-width:68ch}
+.plot{padding:16px 10px 8px}
+.plot svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;padding:0 16px 14px;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:2px;flex:none}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:430px}
+th,td{text-align:left;padding:7px 11px;border-bottom:1px solid var(--rule-soft)}
+thead th{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-muted);font-weight:500;border-bottom:1px solid var(--rule);white-space:nowrap}
+td.num,th.num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.mono{font-family:var(--font-mono);font-size:12.5px}
+tbody tr:last-child td{border-bottom:0}
+.chip{display:inline-block;font-family:var(--font-mono);font-size:10px;letter-spacing:.05em;
+  text-transform:uppercase;padding:2px 6px;border-radius:2px;border:1px solid;white-space:nowrap}
+.chip.under{color:var(--warn);border-color:var(--warn)}
+.chip.over{color:var(--ok);border-color:var(--ok)}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(152px,1fr));gap:1px;background:var(--rule);
+  border:1px solid var(--rule);border-radius:4px;margin-top:24px;overflow:hidden}
+.key{background:var(--surface);padding:14px 15px;min-width:0}
+.key-v{font-family:var(--font-mono);font-size:25px;font-weight:600;letter-spacing:-.02em;line-height:1.05}
+.key-l{font-size:12.5px;color:var(--ink-2);margin-top:6px;line-height:1.38}
+ul{margin:0 0 1.05em;padding-left:1.15em}
+li{margin-bottom:.5em}
+pre{margin:14px 0 0;padding:13px 15px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:4px;overflow-x:auto;font-family:var(--font-mono);font-size:12.5px;line-height:1.6;color:var(--ink-2)}
+pre b{color:var(--ink);font-weight:500}
+code{font-family:var(--font-mono);font-size:.92em;background:var(--sunk);padding:1px 4px;border-radius:2px}
+.disclaim{margin-top:22px;padding:12px 14px;border:1px solid var(--rule);border-left:3px solid var(--accent);
+  background:var(--surface);border-radius:3px;font-size:13.5px;color:var(--ink-2);max-width:66ch}
+footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink-muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <p class="eyebrow">Independent · public data · not a vulnerability report</p>
+  <h1>Template Floor Check</h1>
+  <p class="standfirst">OSS Scanner's threat-model template gives one worked example of a severity
+  rubric. In Anthropic's own published ledger, most maintainers rate those bug classes below the
+  floor that example states.</p>
+  <div class="disclaim">Not affiliated with Anthropic, not reviewed by them. Every figure is
+  recomputed from the public ledger at <code>red.anthropic.com/2026/cvd</code>, snapshot r35. The
+  ten figures Anthropic states in prose reproduce exactly from that file before anything below
+  departs from them.</div>
+</header>
+
+<h2>The example</h2>
+<p class="prose"><code>templates/threat_model.md</code> in <code>anthropics/oss-scanner</code>
+offers one worked example under the heading <i>How you rate severity</i>:</p>
+<div class="quote">any buffer overflow, use-after-free, or double free is high+ at a minimum
+<span>templates/threat_model.md — the only severity guidance a maintainer sees before writing their own</span></div>
+
+<h2>What the ledger shows</h2>
+<p class="prose">In the revealed portion of the ledger, <b id="n-line">&nbsp;</b> carry both a
+Claude severity and a maintainer severity in exactly those classes. Each finding is counted once:
+a finding can appear under a CVE and several GHSAs at the same time, which double-counts if you
+iterate advisory records.</p>
+<div class="keys" id="keys"></div>
+<figure>
+  <figcaption><div class="fig-t">Where each party put those findings</div>
+    <div class="fig-s">Severity bands left to right, shaded light to dark. The rule marks the
+    floor the template's example states.</div></figcaption>
+  <div class="plot"><svg id="dist" role="img"
+    aria-label="Maintainers rated 4 low, 20 medium, 8 high and 1 critical; Claude rated 1 low, 4 medium, 24 high and 4 critical. The template's floor sits at high."></svg></div>
+  <div class="legend" id="legend"></div>
+</figure>
+
+<h2>The more interesting half</h2>
+<p class="prose">These conventions genuinely differ between projects, and a worked example cannot
+be neutral between them. Three large C and C++ projects rate memory-safety findings at medium as a
+matter of course; the kernel, nginx and OpenSSL do not.</p>
+<figure>
+  <figcaption><div class="fig-t">Maintainer severity by project</div>
+    <div class="fig-s">Every project in the measured slice, largest first.</div></figcaption>
+  <div class="scroll" style="padding:0 16px 6px"><table id="proj">
+    <thead><tr><th>Project</th><th class="num">n</th><th>Bands the maintainer assigned</th>
+    <th class="num">At or above floor</th></tr></thead><tbody></tbody></table></div>
+</figure>
+
+<h2>What would make this wrong</h2>
+<ul class="prose">
+  <li><b>Small and concentrated.</b> <span id="robust">&nbsp;</span></li>
+  <li><b>Self-selected.</b> A maintainer severity exists only where a maintainer published an
+  advisory, and that subset runs about 0.24 bands hotter than findings without one. It is not a
+  random sample of the corpus.</li>
+  <li><b>Possibly the instrument, not the judgement.</b> Maintainers commonly score with CVSS while
+  a rubric need not. This data cannot separate a scoring-framework difference from a disagreement.</li>
+  <li><b>Ordinal bands.</b> Counts above and below one threshold are reported rather than averaged
+  distances, because CVSS band widths are not equal.</li>
+  <li><b>It may be deliberate.</b> If the example states a floor the pipeline should apply whatever
+  maintainers do, this is simply the size of that intended gap.</li>
+</ul>
+
+<h2>Reproducing it</h2>
+<pre><b>python3 src/fetch.py</b>                                <span style="color:var(--ink-muted)"># pin and hash a snapshot</span>
+<b>python3 -I src/template_check.py data/payload-r35.json</b></pre>
+<p class="prose" style="margin-top:18px">Standard library only, no dependencies, offline after the
+fetch. The same repository holds the full audit, including two errors of its own found and
+corrected the same way: a breakdown that double-counted advisory records, and intervals that
+assumed findings were independent when 44.2% of the paired set shares a single discovery date.</p>
+
+<footer>
+  <p>Recomputed from <code>red.anthropic.com/2026/cvd/data/payload.json</code>, revision 35,
+  pinned and hashed. Independent and unaffiliated; all interpretation is the author's.</p>
+</footer>
+</div>
+<script id="tpl-data" type="application/json">{"n":33,"projects":14,"classes":{"heap-buffer-overflow":18,"use-after-free":6,"stack-buffer-overflow":7,"buffer-overflow":2},"maintainer":{"mean_band":1.1818181818181819,"distribution":{"low":4,"medium":20,"high":8,"critical":1},"below_floor":24,"below_floor_pct":72.72727272727273},"claude":{"mean_band":1.9393939393939394,"distribution":{"low":1,"medium":4,"high":24,"critical":4},"below_floor":5,"below_floor_pct":15.151515151515152},"without_two_largest":{"dropped":["libreoffice/core","wolfssl/wolfssl"],"n":18,"mean_band":1.4444444444444444,"below_floor":9,"below_floor_pct":50.0},"by_project":[{"project":"libreoffice/core","n":10,"mean_band":1.0,"distribution":{"medium":10},"at_or_above_floor":0},{"project":"wireshark/wireshark","n":5,"mean_band":0.8,"distribution":{"low":1,"medium":4},"at_or_above_floor":0},{"project":"wolfssl/wolfssl","n":5,"mean_band":0.6,"distribution":{"low":2,"medium":3},"at_or_above_floor":0},{"project":"freebsd/freebsd-src","n":2,"mean_band":2.0,"distribution":{"high":2},"at_or_above_floor":2},{"project":"torvalds/linux","n":2,"mean_band":2.0,"distribution":{"high":2},"at_or_above_floor":2},{"project":"dnsmasq","n":1,"mean_band":2.0,"distribution":{"high":1},"at_or_above_floor":1},{"project":"gpg/libgcrypt","n":1,"mean_band":1.0,"distribution":{"medium":1},"at_or_above_floor":0},{"project":"imagemagick/imagemagick","n":1,"mean_band":2.0,"distribution":{"high":1},"at_or_above_floor":1},{"project":"libexpat/libexpat","n":1,"mean_band":1.0,"distribution":{"medium":1},"at_or_above_floor":0},{"project":"nginx/nginx","n":1,"mean_band":2.0,"distribution":{"high":1},"at_or_above_floor":1},{"project":"nss","n":1,"mean_band":2.0,"distribution":{"high":1},"at_or_above_floor":1},{"project":"opensc","n":1,"mean_band":0.0,"distribution":{"low":1},"at_or_above_floor":0},{"project":"openssl/openssl","n":1,"mean_band":3.0,"distribution":{"critical":1},"at_or_above_floor":1},{"project":"util-linux/util-linux","n":1,"mean_band":1.0,"distribution":{"medium":1},"at_or_above_floor":0}]}</script>
+<script>
+(function(){
+"use strict";
+var R = JSON.parse(document.getElementById('tpl-data').textContent);
+var BANDS = ['low','medium','high','critical'];
+var TONE = ['--b1','--b2','--b3','--b4'];
+var NS = 'http://www.w3.org/2000/svg';
+function el(n, a, t){ var e = document.createElementNS(NS, n);
+  for (var k in a) if (a[k] !== null && a[k] !== undefined) e.setAttribute(k, a[k]);
+  if (t !== undefined) e.textContent = t; return e; }
+
+document.getElementById('n-line').textContent =
+  R.n + ' findings across ' + R.projects + ' projects';
+
+(function keys(){
+  var wrap = document.getElementById('keys');
+  [ { v: R.maintainer.below_floor + ' of ' + R.n, l: 'findings the maintainer placed BELOW the floor the example states (' + Math.round(R.maintainer.below_floor_pct) + '%)' },
+    { v: R.claude.below_floor + ' of ' + R.n, l: 'findings Claude placed below it (' + Math.round(R.claude.below_floor_pct) + '%)' },
+    { v: R.maintainer.mean_band.toFixed(2), l: 'mean maintainer band, where medium is 1 and high is 2' },
+    { v: R.claude.mean_band.toFixed(2), l: 'mean Claude band on the same findings' }
+  ].forEach(function(k){
+    var d = document.createElement('div'); d.className = 'key';
+    var a = document.createElement('div'); a.className = 'key-v'; a.textContent = k.v;
+    var b = document.createElement('div'); b.className = 'key-l'; b.textContent = k.l;
+    d.appendChild(a); d.appendChild(b); wrap.appendChild(d);
+  });
+})();
+
+(function dist(){
+  var svg = document.getElementById('dist');
+  var W = 700, L = 108, R2 = 18, top = 34, rowH = 40, gap = 26;
+  var H = top + 2 * rowH + gap + 46;
+  var inner = W - L - R2;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  var unit = inner / R.n;
+
+  // The floor sits where 'high' begins, which differs per row, so it is drawn inside the loop.
+  [['maintainer', R.maintainer, 0], ['Claude', R.claude, 1]].forEach(function(pair){
+    var name = pair[0], side = pair[1], i = pair[2];
+    var y = top + i * (rowH + gap);
+    svg.appendChild(el('text', { x: L - 13, y: y + 20, 'text-anchor': 'end',
+      'font-family': 'var(--font-body)', 'font-size': 13.5, 'font-weight': 500,
+      fill: 'var(--ink)' }, name));
+    var x = L, belowEnd = L;
+    BANDS.forEach(function(band, j){
+      var c = side.distribution[band] || 0;
+      if (j < 2) belowEnd += c * unit;
+      if (!c) return;
+      var w = c * unit - 2;
+      var rect = el('rect', { x: x, y: y, width: Math.max(w, 2), height: rowH - 8, rx: 2,
+        fill: 'var(' + TONE[j] + ')' });
+      rect.appendChild(el('title', {}, name + ': ' + c + ' ' + band));
+      svg.appendChild(rect);
+      if (w > 26) {
+        svg.appendChild(el('text', { x: x + w / 2, y: y + 21, 'text-anchor': 'middle',
+          'font-family': 'var(--font-mono)', 'font-size': 12, 'font-weight': 600,
+          fill: 'var(' + (j >= 2 ? '--surface' : '--ink') + ')' }, c));
+      }
+      x += c * unit;
+    });
+    svg.appendChild(el('line', { x1: belowEnd, x2: belowEnd, y1: y - 7, y2: y + rowH - 1,
+      stroke: 'var(--warn)', 'stroke-width': 2 }));
+    svg.appendChild(el('text', { x: belowEnd + 6, y: y - 11,
+      'font-family': 'var(--font-mono)', 'font-size': 10.5, fill: 'var(--warn)' },
+      Math.round(side.below_floor_pct) + '% below'));
+  });
+  svg.appendChild(el('text', { x: L, y: H - 10, 'font-family': 'var(--font-body)',
+    'font-size': 11.5, fill: 'var(--ink-muted)' },
+    'bar width = all ' + R.n + ' findings   ·   the rule is the template’s “high+ at a minimum” floor'));
+
+  var lg = document.getElementById('legend');
+  BANDS.forEach(function(b, j){
+    var s = document.createElement('span');
+    var i = document.createElement('i'); i.className = 'sw';
+    i.style.background = 'var(' + TONE[j] + ')';
+    s.appendChild(i); s.appendChild(document.createTextNode(b)); lg.appendChild(s);
+  });
+})();
+
+(function proj(){
+  var body = document.querySelector('#proj tbody');
+  R.by_project.forEach(function(p){
+    var tr = document.createElement('tr');
+    var a = document.createElement('td'); a.className = 'mono'; a.textContent = p.project; tr.appendChild(a);
+    var b = document.createElement('td'); b.className = 'num'; b.textContent = p.n; tr.appendChild(b);
+    var c = document.createElement('td');
+    c.textContent = BANDS.filter(function(x){ return p.distribution[x]; })
+      .map(function(x){ return p.distribution[x] + ' × ' + x; }).join(', ');
+    tr.appendChild(c);
+    var d = document.createElement('td'); d.className = 'num';
+    var chip = document.createElement('span');
+    chip.className = 'chip ' + (p.at_or_above_floor === p.n ? 'over' : 'under');
+    chip.textContent = p.at_or_above_floor + ' / ' + p.n;
+    d.appendChild(chip); tr.appendChild(d);
+    body.appendChild(tr);
+  });
+})();
+
+(function robust(){
+  var w = R.without_two_largest;
+  document.getElementById('robust').textContent =
+    'n = ' + R.n + ' across ' + R.projects + ' projects, and concentrated. Dropping ' +
+    w.dropped.join(' and ') + ' leaves n = ' + w.n + ' and ' +
+    Math.round(w.below_floor_pct) + '% below the floor, down from ' +
+    Math.round(R.maintainer.below_floor_pct) + '%: the effect attenuates but does not vanish.';
+})();
+})();
+</script>
