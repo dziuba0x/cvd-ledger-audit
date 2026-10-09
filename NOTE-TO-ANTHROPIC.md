@@ -15,6 +15,11 @@ red.anthropic.com/2026/cvd from the raw `payload.json`: 83.0% severity agreement
 projects, 219 CVEs, 365 GHSAs, 5,103 acknowledged, 29,439 analysed. All ten
 reproduce exactly. Code and a pinned, hashed snapshot are linked at the end.
 
+I wrote the analysis with Claude Code, which seemed worth saying given where it
+is going. Every figure below was recomputed and checked against the raw file
+rather than taken from a model's summary, and two earlier versions of this note
+were wrong in ways that check caught.
+
 ## The two worked examples point different ways
 
 The README asks the maintainer a set of questions, and they are good ones:
